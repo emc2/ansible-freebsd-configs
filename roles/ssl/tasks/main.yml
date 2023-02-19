@@ -1,0 +1,57 @@
+# Note that the SSL keys directory does need to be 755, as the exact
+# user and group for the keys will vary.
+
+- name: Create SSL directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0755
+  with_items:
+    - "{{ ssl_certs_dir }}"
+    - "{{ ssl_keys_dir }}"
+    - "{{ ssl_crl_dir }}"
+  tags:
+    - setup
+    - ssl
+
+- name: Install client CA cert
+  copy:
+    src: "{{ control_ssl_client_CA_cert }}"
+    dest: "{{ ssl_client_CA_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - ssl
+
+- name: Install client CA crl
+  copy:
+    src: "{{ control_ssl_client_CA_crl }}"
+    dest: "{{ ssl_client_CA_crl_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - ssl
+
+- name: Install server CA cert
+  copy:
+    src: "{{ control_ssl_server_CA_cert }}"
+    dest: "{{ ssl_server_CA_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - ssl
+
+- name: Install server CA crl
+  copy:
+    src: "{{ control_ssl_server_CA_crl }}"
+    dest: "{{ ssl_server_CA_crl_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - ssl

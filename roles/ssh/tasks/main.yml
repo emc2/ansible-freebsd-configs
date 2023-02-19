@@ -4,7 +4,7 @@
     dest: "{{ ssh_config_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
-    mode: 644
+    mode: 0644
   tags:
     - config
     - setup

@@ -1,0 +1,33 @@
+---
+ssl_conf_dir: "{{ conf_dir }}/ssl"
+ssl_certs_dir: "{{ ssl_conf_dir }}/certs"
+ssl_keys_dir: "{{ ssl_conf_dir }}/private"
+ssl_crl_dir: "{{ ssl_conf_dir }}/crl"
+
+ssl_client_CA_cert_file: "client-ca-cert.pem"
+ssl_client_CA_cert_path: "{{ ssl_certs_dir }}/{{ ssl_client_CA_cert_file }}"
+
+ssl_client_CA_crl_file: "client-crl.pem"
+ssl_client_CA_crl_path: "{{ ssl_crl_dir }}/{{ ssl_client_CA_crl_file }}"
+
+ssl_server_CA_cert_file: "server-ca-cert.pem"
+ssl_server_CA_cert_path: "{{ ssl_certs_dir }}/{{ ssl_server_CA_cert_file }}"
+
+ssl_server_CA_crl_file: "server-crl.pem"
+ssl_server_CA_crl_path: "{{ ssl_crl_dir }}/{{ ssl_server_CA_crl_file }}"
+
+# Directories on the Ansible controller
+
+control_ssl_client_CA_dir: "{{ ssl_conf_dir }}/CA-client"
+control_ssl_client_CA_certs_dir: "{{ control_ssl_client_CA_dir }}/certs"
+control_ssl_client_CA_keys_dir: "{{ control_ssl_client_CA_dir }}/private"
+control_ssl_client_CA_crl_dir: "{{ control_ssl_client_CA_dir }}/crl"
+control_ssl_client_CA_cert: "{{ control_ssl_client_CA_certs_dir }}/ca-cert.pem"
+control_ssl_client_CA_crl: "{{ control_ssl_client_CA_crl_dir }}/crl.pem"
+
+control_ssl_server_CA_dir: "{{ ssl_conf_dir }}/CA-server"
+control_ssl_server_CA_certs_dir: "{{ control_ssl_server_CA_dir }}/certs"
+control_ssl_server_CA_keys_dir: "{{ control_ssl_server_CA_dir }}/private"
+control_ssl_server_CA_crl_dir: "{{ control_ssl_server_CA_dir }}/crl"
+control_ssl_server_CA_cert: "{{ control_ssl_server_CA_certs_dir }}/ca-cert.pem"
+control_ssl_server_CA_crl: "{{ control_ssl_server_CA_crl_dir }}/crl.pem"
