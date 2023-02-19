@@ -1,0 +1,14 @@
+---
+ldap_conf_dir: "{{ local_conf_dir }}/openldap"
+ldap_conf_file: "ldap.conf"
+ldap_conf_path: "{{ ldap_conf_dir }}/{{ ldap_conf_file }}"
+
+ldap_client_cert_file: "{{ ansible_hostname }}-ldap-cert.pem"
+ldap_client_cert_path: "{{ ssl_certs_dir }}/{{ ldap_client_cert_file }}"
+ldap_client_key_file: "{{ ansible_hostname }}-ldap-key.pem"
+ldap_client_key_path: "{{ ssl_keys_dir }}/{{ ldap_client_key_file }}"
+
+ldap_base_dn: "dc=example,dc=com"
+
+ldap_uris:
+  - ldaps://ldap.example.com

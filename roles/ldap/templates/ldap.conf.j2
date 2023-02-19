@@ -1,0 +1,14 @@
+{% set uris = [] %}
+{% for item in ldap_uris %}
+{% set uris = uris.append(item) %}
+{% endfor %}
+BASE            {{ ldap_base_dn }}
+URI             {{ uris | join(" ") }}
+TLS_CACERT      {{ ssl_server_CA_cert_path }}
+#TLS_CRLFILE    {{ ssl_server_CA_crl_path }}
+#TLS_CRLCHECK   all
+TLS_CERT        {{ ldap_client_cert_path }}
+TLS_KEY         {{ ldap_client_key_path }}
+TLS_REQCERT     hard
+SASL_MECH       GSSAPI
+SASL_SECPROPS   noplain,noanonymous

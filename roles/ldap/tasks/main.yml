@@ -1,0 +1,32 @@
+- name: Install LDAP client certificate
+  copy:
+    src: "{{ control_ssl_client_CA_certs_dir }}/{{ ldap_client_cert_file }}"
+    dest: "{{ ldap_client_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+
+- name: Install LDAP client key
+  copy:
+    src: "{{ control_ssl_client_CA_keys_dir }}/{{ ldap_client_key_file }}"
+    dest: "{{ ldap_client_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+
+- name: Install LDAP configuration file
+  template:
+    src: "ldap.conf.j2"
+    dest: "{{ ldap_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
