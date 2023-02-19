@@ -1,16 +1,21 @@
 ---
 # Basic system directories
 
-conf_dir: /etc/
-local_dir: /usr/local
-local_conf_dir: {{ local_dir }}/etc
-var_dir: /var
+conf_dir: "/etc"
+local_dir: "/usr/local"
+local_conf_dir: "{{ local_dir }}/etc"
+var_dir: "/var"
 
 # Major system config files
 
-rc_conf: {{ conf_dir }}/rc.conf
+rc_conf: "{{ conf_dir }}/rc.conf"
 
 # Configurations for creating user accounts
 
-nonexistent_home: /nonexistent
-nologin_class: /usr/sbin/nologin
+nonexistent_home: "/nonexistent"
+nologin_class: "/usr/sbin/nologin"
+
+# Definition of root user and group
+
+root_user: root
+root_group: wheel
