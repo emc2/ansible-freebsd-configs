@@ -6,6 +6,8 @@ local_dir: "/usr/local"
 local_conf_dir: "{{ local_dir }}/etc"
 var_dir: "/var"
 
+pam_dir: "{{ conf_dir }}/pam.d"
+
 # Major system config files
 
 rc_conf: "{{ conf_dir }}/rc.conf"

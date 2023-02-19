@@ -1,0 +1,25 @@
+[libdefaults]
+  default_realm = {{ default_kerberos_realm }}
+  allow_weak_crypto = false
+  forwardable = true
+  proxiable = true
+
+[realms]
+{% for name, realm in kerberos_realms.items() %}
+{% set kdcs = [] %}
+{% for item in realm.kdcs %}
+  {% set kdcs = kdcs.append(item) %}
+{% endfor %}
+
+  {{ name }} = {
+    kdc = {{ kdcs | join(" ") }}
+    admin_server = {{ realm.admin_server }}:{{ realm.admin_port }}
+    default_domain = {{ realm.default_domain }}
+  }
+{% endfor %}
+
+[domain_realm]
+{% for network, realm in kerberos_networks.items() %}
+  {{ network }} = {{ realm }}
+  .{{ network }} = {{ realm }}
+{% endfor %}

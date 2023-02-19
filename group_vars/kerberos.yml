@@ -1,0 +1,21 @@
+---
+krb5_conf_file: "krb5.conf"
+krb5_conf_path: "{{ conf_dir }}/{{ krb5_conf_file }}"
+
+default_kerberos_realm: "EXAMPLE.COM"
+
+# Realm configurations
+
+kerberos_realms:
+  "EXAMPLE.COM":
+    default_domain: example.com
+    admin_server: kdc.example.com
+    admin_port: 749
+    kdcs:
+      - "kdc.example.com:88"
+      - "kdc2.example.com:88"
+
+# Network mappings
+
+kerberos_networks:
+  "example.com": "EXAMPLE.COM"
