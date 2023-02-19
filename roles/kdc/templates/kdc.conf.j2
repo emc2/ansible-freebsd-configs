@@ -1,0 +1,12 @@
+[kdcdefaults]
+  allow_weak_crypto = false
+  kdc_ports = 88
+
+[realms]
+{% for realm in kdc_realms %}
+  {{ realm }} = {
+    kadmind_port = {{ kerberos_realms[realm].admin_port }}
+    master_key_type = aes256-cts-hmac-sha1-96
+    supported_enctypes = aes256-cts-hmac-sha1-96
+  }
+{% endfor %}

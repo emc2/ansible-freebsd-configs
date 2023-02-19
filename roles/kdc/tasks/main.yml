@@ -1,0 +1,22 @@
+- name: Install kdc.conf file
+  template:
+    src: kdc.conf.j2
+    dest: "{{ kdc_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: kdc_conf
+
+- name: Ensure kdc is running
+  service:
+    name: "{{ kdc_service }}"
+    state: started
+
+- name: Restart kdc
+  service:
+    name: "{{ kdc_service }}"
+    state: restarted
+  when: kdc_conf.changed

@@ -1,0 +1,9 @@
+---
+kdc_conf_dir: "{{ local_var_dir }}/krb5kdc"
+kdc_conf_file: "kdc.conf"
+kdc_conf_path: "{{ kdc_conf_dir }}/{{ kdc_conf_file }}"
+kadm5_acl_file: "kadm5.acl"
+kadm5_acl_path: "{{ kdc_conf_dir }}/{{ kadm5_acl_file }}"
+
+kdc_realms:
+  - "EXAMPLE.COM"
