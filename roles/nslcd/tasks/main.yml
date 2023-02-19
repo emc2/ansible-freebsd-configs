@@ -1,0 +1,99 @@
+- name: Create nslcd group
+  group:
+    name: "{{ nslcd_group }}"
+    gid: "{{ nslcd_gid }}"
+  tags:
+    - setup
+
+- name: Create nslcd user
+  user:
+    name: "{{ nslcd_user }}"
+    uid: "{{ nslcd_uid }}"
+    group: "{{ nslcd_group }}"
+    comment: "nslcd daemon"
+    home: "{{ nonexistent_home }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
+- name: Install nslcd client certificate
+  copy:
+    src: "{{ control_ssl_client_CA_certs_dir }}/{{ nslcd_client_cert_file }}"
+    dest: "{{ nslcd_client_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: nslcd_ssl
+
+- name: Install nslcd client key
+  copy:
+    src: "{{ control_ssl_client_CA_keys_dir }}/{{ nslcd_client_key_file }}"
+    dest: "{{ nslcd_client_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ nslcd_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+  register: nslcd_ssl
+
+- name: Check nslcd keytab
+  file:
+    path: "{{ nslcd_keytab_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ nslcd_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+- name: Install nslcd configuration file
+  template:
+    src: "nslcd.conf.j2"
+    dest: "{{ nslcd_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: nslcd_conf
+
+- name: Add nsswitch.conf entries
+  lineinfile:
+    dest: "{{ nsswitch_conf }}"
+    regexp: "^{{ item }}{{ ':' }}"
+    line: "{{ item }}{{ ':' }} ldap files"
+  with_items:
+    - passwd
+    - group
+  tags:
+    - setup
+    - config
+
+- name: Add cron job to refresh nslcd user's credentials
+  cron:
+    name: "Refresh nslcd Kerberos credentials"
+    minute: "0"
+    hour: "*/6"
+    user: "{{ nslcd_user }}"
+    job: "{{ kinit }} -k -t {{ nslcd_keytab_path }} {{ nslcd_principal }}"
+  tags:
+    - setup
+
+- name: Ensure nslcd is running
+  service:
+    name: "{{ nslcd_service }}"
+    state: started
+
+- name: Restart nslcd
+  service:
+    name: "{{ nslcd_service }}"
+    state: restarted
+  when: nslcd_conf.changed or
+        nslcd_ssl.changed or
+        server_ca_ssl.changed

@@ -2,8 +2,6 @@
 krb5_conf_file: "krb5.conf"
 krb5_conf_path: "{{ conf_dir }}/{{ krb5_conf_file }}"
 
-default_kerberos_realm: "EXAMPLE.COM"
-
 # Realm configurations
 
 kerberos_realms:

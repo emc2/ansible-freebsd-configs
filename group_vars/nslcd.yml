@@ -1,0 +1,10 @@
+---
+nslcd_conf_file: "nslcd.conf"
+nslcd_conf_path: "{{ local_conf_dir }}/{{ nslcd_conf_file }}"
+nslcd_keytab_file: "nss.keytab"
+nslcd_keytab_path: "{{ keytabs_dir }}/{{ nslcd_keytab_file }}"
+nslcd_client_cert_file: "{{ ansible_hostname }}-nss-cert.pem"
+nslcd_client_cert_path: "{{ ssl_certs_dir }}/{{ nslcd_client_cert_file }}"
+nslcd_client_key_file: "{{ ansible_hostname }}-nss-key.pem"
+nslcd_client_key_path: "{{ ssl_keys_dir }}/{{ nslcd_client_key_file }}"
+nslcd_principal: "nss/{{ ansible_fqdn }}@{{ kerberos_realm }}"

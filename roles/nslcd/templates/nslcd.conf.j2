@@ -1,0 +1,24 @@
+{% set uris = [] %}
+{% for item in ldap_uris %}
+{% set uris = uris.append(item) %}
+{% endfor %}
+uid             {{ nslcd_user }}
+gid             {{ nslcd_group }}
+uri             {{ uris | join(" ") }}
+ldap_version    3
+scope           one
+tls_reqcert     hard
+tls_cacertfile  {{ ssl_server_CA_cert_path }}
+tls_cert        {{ nslcd_client_cert_path }}
+tls_key         {{ nslcd_client_key_path }}
+#tls_crlfile    {{ ssl_server_CA_crl_path }}
+#tls_crlcheck   all
+tls_ciphers    {{ openssl_ciphers }}
+sasl_mech       GSSAPI
+sasl_secprops   noplain,noanonymous
+sasl_realm      {{ kerberos_realm }}
+base            {{ ldap_base_dn }}
+base passwd     {{ ldap_users_dn }}
+base group      {{ ldap_groups_dn }}
+base hosts      {{ ldap_hosts_dn }}
+base ethers     {{ ldap_hosts_dn }}

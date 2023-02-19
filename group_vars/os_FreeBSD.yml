@@ -7,10 +7,12 @@ local_conf_dir: "{{ local_dir }}/etc"
 var_dir: "/var"
 
 pam_dir: "{{ conf_dir }}/pam.d"
+keytabs_dir: "{{ conf_dir }}/keytabs"
 
 # Major system config files
 
 rc_conf: "{{ conf_dir }}/rc.conf"
+nsswitch_conf: "{{ conf_dir }}/nsswitch.conf"
 
 # Configurations for creating user accounts
 
@@ -21,3 +23,13 @@ nologin_class: "/usr/sbin/nologin"
 
 root_user: root
 root_group: wheel
+
+nslcd_user: nslcd
+nslcd_group: nslcd
+nslcd_uid: 928
+nslcd_gid: 928
+
+# Service names
+
+sshd_service: "sshd"
+nslcd_service: "nslcd"

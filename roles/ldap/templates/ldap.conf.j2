@@ -10,5 +10,6 @@ TLS_CACERT      {{ ssl_server_CA_cert_path }}
 TLS_CERT        {{ ldap_client_cert_path }}
 TLS_KEY         {{ ldap_client_key_path }}
 TLS_REQCERT     hard
+TLS_CIPHERSUITE {{ openssl_ciphers }}
 SASL_MECH       GSSAPI
 SASL_SECPROPS   noplain,noanonymous

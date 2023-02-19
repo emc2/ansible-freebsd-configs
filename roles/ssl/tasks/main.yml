@@ -25,6 +25,7 @@
     mode: 0644
   tags:
     - ssl
+  register: client_ca_ssl
 
 - name: Install client CA crl
   copy:
@@ -35,6 +36,7 @@
     mode: 0644
   tags:
     - ssl
+  register: client_ca_ssl
 
 - name: Install server CA cert
   copy:
@@ -45,6 +47,7 @@
     mode: 0644
   tags:
     - ssl
+  register: server_ca_ssl
 
 - name: Install server CA crl
   copy:
@@ -55,3 +58,4 @@
     mode: 0644
   tags:
     - ssl
+  register: server_ca_ssl
