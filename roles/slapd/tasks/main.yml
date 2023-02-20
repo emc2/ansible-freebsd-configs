@@ -1,0 +1,129 @@
+- name: Create ldap group
+  group:
+    name: "{{ slapd_group }}"
+    gid: "{{ slapd_gid }}"
+  tags:
+    - setup
+
+- name: Create ldap user
+  user:
+    name: "{{ slapd_user }}"
+    uid: "{{ slapd_uid }}"
+    group: "{{ slapd_group }}"
+    groups: "{{ sasl_group }}"
+    comment: "OpenLDAP daemon"
+    home: "{{ nonexistent_home }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
+- name: Install slapd server certificate
+  copy:
+    src: "{{ control_ssl_server_CA_certs_dir }}/{{ slapd_cert_file }}"
+    dest: "{{ slapd_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: slapd_cert
+
+- name: Install slapd server key
+  copy:
+    src: "{{ control_ssl_server_CA_keys_dir }}/{{ slapd_key_file }}"
+    dest: "{{ slapd_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ slapd_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+  register: slapd_key
+
+- name: Check slapd keytab
+  file:
+    path: "{{ slapd_keytab_path }}"
+    owner: root
+    group: "{{ slapd_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+- name: Install sasl slapd.conf
+  template:
+    src: sasl2.slapd.conf.j2
+    dest: "{{ slapd_sasl_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+
+- name: Create slapd.access file
+  template:
+    src: slapd.access.j2
+    dest: "{{ slapd_access_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 644
+  tags:
+    - setup
+    - config
+  register: slapd_access
+
+- name: Create slapd.conf file
+  template:
+    src: slapd.conf.j2
+    dest: "{{ slapd_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: slapd_conf
+
+- name: Enable slapd in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^slapd_enable="
+    line: "slapd_enable=YES"
+  tags:
+    - setup
+
+- name: Set slapd kerberos keytab
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^slapd_krb5_ktname"
+    line: "slapd_krb5_ktname={{ slapd_keytab_path }}"
+  tags:
+    - setup
+
+- name: Set slapd flags
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^slapd_flags="
+    line: "slapd_flags=\"-h 'ldapi:/// ldap:/// ldaps:///'\""
+  tags:
+    - setup
+
+- name: Ensure slapd is running
+  service:
+    name: "{{ slapd_service }}"
+    state: started
+
+- name: Restart slapd
+  service:
+    name: "{{ slapd_service }}"
+    state: restarted
+  tags:
+    - config
+    - ssl
+  when: slapd_conf.changed or
+        slapd_access.changed or
+        slapd_cert.changed or
+        slapd_key.changed

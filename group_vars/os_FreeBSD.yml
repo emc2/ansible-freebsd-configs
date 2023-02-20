@@ -5,7 +5,11 @@ conf_dir: "/etc"
 local_dir: "/usr/local"
 local_conf_dir: "{{ local_dir }}/etc"
 var_dir: "/var"
+run_dir: "{{ var_dir }}/run"
+db_dir: "{{ var_dir }}/db"
 local_var_dir: "{{ local_dir }}/var"
+local_lib_dir: "{{ local_dir }}/lib"
+local_libexec_dir: "{{ local_dir }}/libexec"
 
 pam_dir: "{{ conf_dir }}/pam.d"
 keytabs_dir: "{{ conf_dir }}/keytabs"
@@ -30,8 +34,17 @@ nslcd_group: nslcd
 nslcd_uid: 928
 nslcd_gid: 928
 
+slapd_user: ldap
+slapd_group: ldap
+slapd_uid: 389
+slapd_gid: 389
+
+sasl_group: mail
+
 # Service names
 
 sshd_service: "sshd"
 nslcd_service: "nslcd"
 kdc_service: "kdc"
+saslauthd_service: "saslauthd"
+slapd_service: "slapd"

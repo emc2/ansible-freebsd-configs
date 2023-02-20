@@ -1,0 +1,73 @@
+include         {{ slapd_conf_dir }}/schema/core.schema
+include         {{ slapd_conf_dir }}/schema/cosine.schema
+include         {{ slapd_conf_dir }}/schema/inetorgperson.schema
+include         {{ slapd_conf_dir }}/schema/jabberd.schema
+include         {{ slapd_conf_dir }}/schema/nis.schema
+include         {{ slapd_conf_dir }}/schema/postfix.schema
+include         {{ slapd_conf_dir }}/schema/dnszone.schema
+include         {{ slapd_conf_dir }}/schema/automount.schema
+
+pidfile         {{ slapd_run_dir }}/slapd.pid
+argsfile        {{ slapd_run_dir }}/slapd.args
+
+modulepath      {{ slapd_modules_dir }}
+moduleload      back_mdb
+
+database        mdb
+suffix          "{{ ldap_base_dn }}"
+directory       {{ slapd_data_dir }}
+
+index           objectClass             eq
+index           uid                     eq
+index           memberUid               eq
+index           mail                    eq
+index           uidNumber               eq
+index           gidNumber               eq
+index           jabberID                eq
+index           cn                      eq
+index           member                  eq
+index           automountKey            eq
+index           automountMapName        eq
+
+TLSVerifyClient         try
+TLSCertificateFile      {{ slapd_cert_path }}
+TLSCertificateKeyFile   {{ slapd_key_path }}
+TLSCACertificateFile    {{ ssl_client_CA_cert_path }}
+TLSCipherSuite          {{ openssl_ciphers }}
+#TLSCRLFile              {{ ssl_client_CA_crl_path }}
+#TLSCRLCheck             all
+
+include {{ slapd_access_path }}
+
+# Translate authentication into LDAP users
+
+authz-policy from
+
+# Translate admin/admin into the LDAP admin user
+
+authz-regexp "uid=admin/admin,cn={{ kerberos_realm }},cn=gssapi,cn=auth" "cn=admin,{{ ldap_base_dn }}"
+authz-regexp "uid=admin/admin,cn={{ kerberos_realm }},cn=gss-spnego,cn=auth" "cn=admin,{{ ldap_base_dn }}"
+
+# Translate host and service credentials into entries in hosts
+
+authz-regexp "uid=host/([^,]+).{{ kerberos_realm }},cn={{ network_name }},cn=gssapi,cn=auth" "cn=$1.{{ network_name }},{{ ldap_hosts_dn }}"
+authz-regexp "uid=host/([^,]+).{{ kerberos_realm }},cn={{ network_name }},cn=gss-spnego,cn=auth" "cn=$1.{{ network_name }},{{ ldap_hosts_dn }}"
+authz-regexp "uid=([^/,]+)/([^/\.,]+).{{ kerberos_realm }},cn={{ network_name}},cn=gssapi,cn=auth" "cn=$1,cn=$2.{{ network_name }},{{ ldap_hosts_dn }}"
+authz-regexp "uid=([^/,]+)/([^/\.,]+).{{ kerberos_realm }},cn={{ network_name }},cn=gss-spnego,cn=auth" "cn=$1,cn=$2.{{ network_name }},{{ ldap_hosts_dn }}"
+
+# Translate users into entries in people
+
+authz-regexp "uid=([^/.,]+),cn={{ kerberos_realm }},cn=gssapi,cn=auth" "cn=$1,{{ ldap_users_dn }}"
+authz-regexp "uid=([^/.,]+),cn={{ kerberos_realm }},cn=gss-spnego,cn=auth" "cn=$1,{{ ldap_users_dn }}"
+
+# Translate host certs into entries in hosts
+
+authz-regexp "cn=([^/\.,]+).{{ network_name }},ou=hosts,o={{ network_name }}" "cn=$1.{{ network_name }},{{ ldap_hosts_dn }}"
+
+# Translate user certs into entries in people
+
+authz-regexp "cn=([^/,]+),ou=people,o={{ network_name }}" "cn=$1,{{ ldap_users_dn }}"
+
+sasl-host       {{ ansible_fqdn }}
+sasl-realm      {{ kerberos_realm }}
+sasl-secprops   noplain,noanonymous

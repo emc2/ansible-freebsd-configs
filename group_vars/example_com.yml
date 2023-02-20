@@ -1,5 +1,6 @@
 # Network configuration file for "example.com"
 ---
+network_name: "example.com"
 kerberos_realm: "EXAMPLE.COM"
 
 ldap_base_dn: "dc=example,dc=com"

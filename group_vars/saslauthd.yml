@@ -1,0 +1,3 @@
+---
+sasl_conf_dir: "{{ local_lib_dir }}/sasl2"
+sasl_mux: "{{ run_dir }}/saslauthd/mux"
