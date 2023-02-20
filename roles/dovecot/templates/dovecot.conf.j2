@@ -1,0 +1,96 @@
+auth_default_realm = {{ kerberos_realm }}
+auth_gssapi_hostname = {{ ansible_fqdn }}
+auth_krb5_keytab = {{ dovecot_keytab_path }}
+auth_mechanisms = plain gssapi external
+auth_realms = {{ kerberos_realm }}
+auth_username_format = %n
+base_dir = {{ dovecot_run_dir }}
+disable_plaintext_auth = no
+first_valid_gid = 10000
+first_valid_uid = 10000
+login_greeting = {{ network_name }} mail server ready.
+mail_location = maildir:~/Maildir
+mail_privileged_group = mail
+protocols = imap sieve
+ssl = required
+ssl_ca = <{{ ssl_client_CA_cert_path }}
+#ssl_crl = <{{ ssl_client_CA_crl_path }}
+ssl_cert = <{{ dovecot_mail_cert_path }}
+ssl_key = <{{ dovecot_mail_key_path }}
+ssl_cipher_list = {{ openssl_ciphers }}
+verbose_proctitle = yes
+
+passdb {
+  driver = pam
+}
+
+plugin {
+  sieve = ~/.sieve
+  sieve_dir = ~/sieve
+}
+
+service auth {
+  unix_listener {{ mail_auth_socket_path }} {
+    group = {{ postfix_group }}
+    mode = 0660
+    user = {{ postfix_user }}
+  }
+  user = {{ dovecot_user }}
+}
+
+service auth-worker {
+  user = {{ dovecot_user }}
+}
+
+service imap-login {
+  chroot = login
+  user = {{ dovecot_user }}
+}
+
+service pop3-login {
+  chroot = login
+
+  inet_listener pop3 {
+    port = 0
+  }
+
+  user = {{ dovecot_user }}
+}
+
+service managesieve-login {
+  inet_listener sieve {
+    port = 4190
+  }
+  user = {{ dovecot_user }}
+}
+
+service managesieve {
+  user = {{ dovecot_user }}
+}
+
+userdb {
+  args = {{ dovecot_ldap_conf_path }}
+  driver = ldap
+}
+
+protocol imap {
+  imap_client_workarounds = delay-newmail  tb-extra-mailbox-sep
+}
+
+protocol pop3 {
+  pop3_client_workarounds = outlook-no-nuls oe-ns-eoh
+  pop3_uidl_format = %08Xu%08Xv
+}
+
+protocol lda {
+  mail_plugins = sieve
+  postmaster_address = postmaster@{{ network_name }}
+  sendmail_path = {{ sendmail_bin }}
+}
+
+protocol lmtp {
+    mail_plugins = sieve
+}
+
+protocol sieve {
+}

@@ -1,0 +1,2 @@
+---
+mail_auth_socket_path: "/var/spool/postfix/private/auth"

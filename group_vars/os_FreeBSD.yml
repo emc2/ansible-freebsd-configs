@@ -23,8 +23,14 @@ nsswitch_conf: "{{ conf_dir }}/nsswitch.conf"
 
 nonexistent_home: "/nonexistent"
 nologin_class: "/usr/sbin/nologin"
+empty_dir: "{{ var_dir }}/empty"
 
-# Definition of root user and group
+# System binaries
+
+kinit_bin: "/usr/bin/kinit"
+sendmail_bin: "/usr/local/sbin/sendmail"
+
+# Definition of users and groups
 
 root_user: root
 root_group: wheel
@@ -41,6 +47,24 @@ slapd_gid: 389
 
 sasl_group: mail
 
+dovecot_group: dovecot
+dovecot_user: dovecot
+dovecot_gid: 143
+dovecot_uid: 143
+
+postfix_group: postfix
+postfix_user: postfix
+postfix_gid: 125
+postfix_uid: 125
+
+dovecot_login_group: dovenull
+dovecot_login_user: dovenull
+dovecot_login_gid: 143
+dovecot_login_uid: 143
+
+maia_group: vscan
+maia_user: vscan
+
 # Service names
 
 sshd_service: "sshd"
@@ -48,3 +72,4 @@ nslcd_service: "nslcd"
 kdc_service: "kdc"
 saslauthd_service: "saslauthd"
 slapd_service: "slapd"
+dovecot_service: "dovecot"

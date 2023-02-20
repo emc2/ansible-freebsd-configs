@@ -31,3 +31,16 @@ control_ssl_server_CA_keys_dir: "{{ control_ssl_server_CA_dir }}/private"
 control_ssl_server_CA_crl_dir: "{{ control_ssl_server_CA_dir }}/crl"
 control_ssl_server_CA_cert: "{{ control_ssl_server_CA_certs_dir }}/ca-cert.pem"
 control_ssl_server_CA_crl: "{{ control_ssl_server_CA_crl_dir }}/crl.pem"
+
+control_letsencrypt_certs_dir: "{{ ssl_certs_dir }}"
+control_letsencrypt_keys_dir: "{{ ssl_keys_dir }}"
+
+letsencrypt_mail_cert_file: "{{ ansible_fqdn }}-cert.pem"
+letsencrypt_mail_key_file: "{{ ansible_fqdn }}-key.pem"
+letsencrypt_www_cert_file: "{{ ansible_fqdn }}-cert.pem"
+letsencrypt_www_key_file: "{{ ansible_fqdn }}-key.pem"
+
+control_letsencrypt_mail_cert_path: "{{ control_letsencrypt_certs_dir }}/{{ letsencrypt_mail_cert_file }}"
+control_letsencrypt_mail_key_path: "{{ control_letsencrypt_keys_dir }}/{{ letsencrypt_mail_key_file }}"
+control_letsencrypt_www_cert_path: "{{ control_letsencrypt_certs_dir }}/{{ letsencrypt_www_cert_file }}"
+control_letsencrypt_www_key_path: "{{ control_letsencrypt_keys_dir }}/{{ letsencrypt_www_key_file }}"

@@ -1,0 +1,16 @@
+{% set uris = [] %}
+{% for item in ldap_uris %}
+{% set uris = uris.append(item) %}
+{% endfor %}
+uris = {{ uris | join(" ") }}
+sasl_bind = yes
+sasl_mech = GSSAPI
+tls_ca_cert_file = {{ ssl_server_CA_cert_path }}
+tls_cert_file = {{ dovecot_ldap_cert_path }}
+tls_key_file = {{ dovecot_ldap_key_path }}
+tls_require_cert = demand
+tls_cipher_suite = {{ openssl_ciphers }}
+ldap_version = 3
+base = {{ ldap_users_dn }}
+user_attrs = homeDirectory=home,uidNumber=uid,gidNumber=gid
+user_filter = (&(objectClass=mailUser)(cn=%u))

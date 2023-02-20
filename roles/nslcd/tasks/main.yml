@@ -81,7 +81,7 @@
     minute: "0"
     hour: "*/6"
     user: "{{ nslcd_user }}"
-    job: "{{ kinit }} -k -t {{ nslcd_keytab_path }} {{ nslcd_principal }}"
+    job: "{{ kinit_bin }} -k -t {{ nslcd_keytab_path }} {{ nslcd_principal }}"
   tags:
     - setup
 
