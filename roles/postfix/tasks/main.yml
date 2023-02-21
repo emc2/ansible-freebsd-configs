@@ -1,0 +1,172 @@
+# Ensure that postfix user and group exist
+
+- name: Create postfix group
+  group:
+    name: "{{ postfix_group }}"
+    gid: "{{ postfix_gid }}"
+  tags:
+    - setup
+
+- name: Create postfix user
+  user:
+    name: "{{ postfix_user }}"
+    uid: "{{ postfix_uid }}"
+    group: "{{ postfix_group }}"
+    comment: "Postfix Mail System"
+    home: "{{ mail_queue_dir }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
+# Copy certificates and keys into place
+
+- name: Install ldap client certificate
+  copy:
+    src: "{{ control_ssl_client_CA_certs_dir }}/{{ postfix_ldap_cert_file }}"
+    dest: "{{ postfix_ldap_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: postfix_ldap_cert
+
+- name: Install ldap client key
+  copy:
+    src: "{{ control_ssl_client_CA_keys_dir }}/{{ postfix_ldap_key_file }}"
+    dest: "{{ postfix_ldap_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ postfix_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+  register: postfix_ldap_key
+
+- name: Install mail certificate
+  copy:
+    src: "{{ control_letsencrypt_mail_cert_path }}"
+    dest: "{{ postfix_mail_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: postfix_mail_cert
+
+- name: Install mail key
+  copy:
+    src: "{{ control_letsencrypt_mail_key_path }}"
+    dest: "{{ postfix_mail_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ postfix_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+  register: postfix_mail_key
+
+- name: Check postfix keytab
+  file:
+    path: "{{ postfix_keytab_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ postfix_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+# Set up the postfix config files
+
+- name: Create master.cf file
+  template:
+    src: master.cf.j2
+    dest: "{{ postfix_master_cf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: postfix_master_cf
+
+- name: Create main.cf
+  template:
+    src: main.cf.j2
+    dest: "{{ postfix_main_cf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: postfix_main_cf
+
+- name: Create postfix-ldap.cf file
+  template:
+    src: postfix-ldap.cf.j2
+    dest: "{{ postfix_ldap_cf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: postfix_ldap_cf
+
+- name: Create mailer.conf file
+  template:
+    src: mailer.conf.j2
+    dest: "{{ mailer_conf }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+
+# Set up a cron job to periodically refresh the postfix user's
+# Kerberos credentials
+
+- name: Add cron job to refresh postfix user's credentials
+  cron:
+    name: "Refresh postfix Kerberos credentials"
+    minute: "0"
+    hour: "*/6"
+    user: "{{ postfix_user }}"
+    job: "{{ kinit_bin }} -k -t {{ postfix_keytab_path }} {{ postfix_principal }}"
+  tags:
+    - setup
+
+# Enable postfix is enabled in rc.conf and ensure the daemon is running.
+
+- name: Enable postfix in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^postfix_enable="
+    line: "postfix_enable=YES"
+  tags:
+    - setup
+
+- name: Ensure postfix is running
+  service:
+    name: "{{ postfix_service }}"
+    state: started
+
+- name: Restart postfix
+  service:
+    name: "{{ postfix_service }}"
+    state: restarted
+  tags:
+    - ssl
+    - config
+  when: postfix_ldap_cert.changed or
+        postfix_ldap_key.changed or
+        postfix_mail_cert.changed or
+        postfix_mail_key.changed or
+        postfix_ldap_cf or
+        postfix_main_cf or
+        postfix_master_cf

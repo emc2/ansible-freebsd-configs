@@ -8,3 +8,5 @@
         key: "os_{{ ansible_facts['distribution'] }}"
   roles:
     - dovecot
+    - postfix
+

@@ -1,0 +1,18 @@
+{% set uris = [] %}
+{% for item in ldap_uris %}
+{% set uris = uris.append(item) %}
+{% endfor %}
+server_host = {{ uris | join(" ") }}
+search_base = {{ ldap_users_dn }}
+version = 3
+bind = no
+sasl_mechs = GSSAPI
+sasl_realm = {{ kerberos_realm }}
+scope = sub
+query_filter = mail=%s@{{ network_name }}
+result_attribute = maildrop
+tls_ca_cert_file = {{ ssl_server_CA_cert_path }}
+tls_cert = {{ postfix_ldap_cert_path }}
+tls_key = {{ postfix_ldap_key_path }}
+tls_cipher_suite = {{ openssl_ciphers }}
+tls_require_cert = yes

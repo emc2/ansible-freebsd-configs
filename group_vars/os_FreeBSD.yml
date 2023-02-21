@@ -7,9 +7,11 @@ local_conf_dir: "{{ local_dir }}/etc"
 var_dir: "/var"
 run_dir: "{{ var_dir }}/run"
 db_dir: "{{ var_dir }}/db"
+queue_dir: "{{ var_dir }}/spool"
 local_var_dir: "{{ local_dir }}/var"
 local_lib_dir: "{{ local_dir }}/lib"
 local_libexec_dir: "{{ local_dir }}/libexec"
+local_sbin_dir: "{{ local_dir }}/sbin"
 
 pam_dir: "{{ conf_dir }}/pam.d"
 keytabs_dir: "{{ conf_dir }}/keytabs"
@@ -18,6 +20,7 @@ keytabs_dir: "{{ conf_dir }}/keytabs"
 
 rc_conf: "{{ conf_dir }}/rc.conf"
 nsswitch_conf: "{{ conf_dir }}/nsswitch.conf"
+mailer_conf: "{{ conf_dir }}/mailer.conf"
 
 # Configurations for creating user accounts
 
@@ -28,7 +31,7 @@ empty_dir: "{{ var_dir }}/empty"
 # System binaries
 
 kinit_bin: "/usr/bin/kinit"
-sendmail_bin: "/usr/local/sbin/sendmail"
+sendmail_bin: "{{ local_sbin_dir }}/sendmail"
 
 # Definition of users and groups
 
@@ -73,3 +76,4 @@ kdc_service: "kdc"
 saslauthd_service: "saslauthd"
 slapd_service: "slapd"
 dovecot_service: "dovecot"
+postfix_service: "postfix"

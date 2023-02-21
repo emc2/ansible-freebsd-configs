@@ -1,2 +1,4 @@
 ---
-mail_auth_socket_path: "/var/spool/postfix/private/auth"
+dovecot_libexec_dir: "{{ local_libexec_dir }}/dovecot"
+mail_queue_dir: "{{ queue_dir }}/postfix"
+mail_auth_socket_path: "{{ mail_queue_dir }}/private/auth"
