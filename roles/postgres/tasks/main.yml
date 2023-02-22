@@ -1,0 +1,118 @@
+# Ensure that postgres user and group exist
+
+- name: Create postgres group
+  group:
+    name: "{{ postgres_group }}"
+    gid: "{{ postgres_uid }}"
+  tags:
+    - setup
+
+- name: Create postgres user
+  user:
+    name: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    comment: "PostgreSQL pseudo-user"
+    uid: "{{ postgres_uid }}"
+    home: "{{ postgres_home }}"
+    shell: "/bin/sh"
+    system: yes
+  tags:
+    - setup
+
+# Copy certificate and key into place
+
+- name: Install postgres certificate
+  copy:
+    src: "{{ control_ssl_server_CA_certs_dir }}/{{ postgres_cert_file }}"
+    dest: "{{ postgres_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: postgres_cert
+
+- name: Install postgres key
+  copy:
+    src: "{{ control_ssl_server_CA_keys_dir }}/{{ postgres_key_file }}"
+    dest: "{{ postgres_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ postgres_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+  register: postgres_key
+
+- name: Check postgres keytab
+  file:
+    path: "{{ postgres_keytab_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ postgres_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+# Set up the pg_hba.conf and postgresql.conf files
+
+- name: Create pg_hba.conf file
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ postgres_hba_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: pg_hba
+
+- name: Create postgresql.conf file
+  template:
+    src: postgresql.conf.j2
+    dest: "{{ postgres_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: postgresql_conf
+
+# Enable postgresql is enabled in rc.conf and ensure the daemon is running.
+
+- name: Enable postgresql in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^postgresql_enable="
+    line: "postgresql_enable=YES"
+  tags:
+    - setup
+
+- name: Set postgresql_data
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^postgresql_data="
+    line: "postgresql_data={{ postgres_data_dir }}"
+  tags:
+    - setup
+  register: postgres_data
+
+- name: Ensure postgresql is running
+  service:
+    name: "{{ postgres_service }}"
+    state: started
+
+- name: Restart postresql
+  service:
+    name: "{{ postgres_service }}"
+    state: restarted
+  tags:
+    - config
+    - ssl
+  when: postgres_data.changed or
+        postgres_cert.changed or
+        postgres_key.changed or
+        postgresql.conf.changed or
+        pg_hba.changed

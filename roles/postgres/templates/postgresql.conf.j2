@@ -1,0 +1,9 @@
+ssl = on
+log_destination = 'syslog'
+listen_addresses = '*'
+krb_server_keyfile = '{{ postgres_keytab_path }}'
+ssl_ca_file = '{{ ssl_client_CA_cert_path }}'
+#ssl_crl_file = '{{ ssl_client_CA_crl_path }}'
+ssl_cert_file = '{{ postgres_cert_path }}'
+ssl_key_file = '{{ postgres_key_path }}'
+ssl_ciphers = '{{ openssl_ciphers }}'

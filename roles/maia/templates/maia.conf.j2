@@ -1,4 +1,5 @@
-$dsn = 'DBI:Pg:dbname=maia;host={{ maia_db_host }};sslmode=verify-full;sslrootcert={{ ssl_server_CA_cert_path }};sslcrl={{ ssl_server_CA_crl_path }};sslcert={{ maia_postgres_cert_path }};sslkey={{ maia_postgres_key_path }}';
+#$dsn = 'DBI:Pg:dbname=maia;host={{ maia_db_host }};sslmode=verify-full;sslrootcert={{ ssl_server_CA_cert_path }};sslcrl={{ ssl_server_CA_crl_path }};sslcert={{ maia_postgres_cert_path }};sslkey={{ maia_postgres_key_path }}';
+$dsn = 'DBI:Pg:dbname=maia;host={{ maia_db_host }};sslmode=verify-full;sslrootcert={{ ssl_server_CA_cert_path }};sslcert={{ maia_postgres_cert_path }};sslkey={{ maia_postgres_key_path }}';
 $username = '{{ maia_database_user }}';
 $password = '';
 $script_dir = '{{ maia_scripts_dir }}';
