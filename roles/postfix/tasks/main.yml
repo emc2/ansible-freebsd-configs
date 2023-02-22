@@ -167,6 +167,6 @@
         postfix_ldap_key.changed or
         postfix_mail_cert.changed or
         postfix_mail_key.changed or
-        postfix_ldap_cf or
-        postfix_main_cf or
-        postfix_master_cf
+        postfix_ldap_cf.changed or
+        postfix_main_cf.changed or
+        postfix_master_cf.changed

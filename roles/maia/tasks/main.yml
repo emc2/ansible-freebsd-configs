@@ -1,0 +1,184 @@
+- name: Create clamav group
+  group:
+    name: "{{ clamav_group }}"
+    gid: "{{ clamav_gid }}"
+  tags:
+    - setup
+
+- name: Create clamav user
+  user:
+    name: "{{ clamav_user }}"
+    uid: "{{ clamav_uid }}"
+    group: "{{ clamav_group }}"
+    groups: "{{ mail_group }}"
+    comment: "Clamav Antivirus"
+    home: "{{ nonexistent_home }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
+- name: Create maia group
+  group:
+    name: "{{ maia_group }}"
+    gid: "{{ maia_gid }}"
+  tags:
+    - setup
+
+- name: Create maia user
+  user:
+    name: "{{ maia_user }}"
+    uid: "{{ maia_uid }}"
+    group: "{{ maia_group }}"
+    groups: "{{ clamav_group }},{{ mail_group }}"
+    comment: "Scanning Virus Account"
+    home: "{{ maia_homedir }}"
+    login_class: "daemon"
+    shell: "/bin/sh"
+    system: yes
+  tags:
+    - setup
+
+- name: Install postgres client certificate
+  copy:
+    src: "{{ control_ssl_client_CA_certs_dir }}/{{ maia_postgres_cert_file }}"
+    dest: "{{ maia_postgres_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: maia_postgres_cert
+
+- name: Install postgres client key
+  copy:
+    src: "{{ control_ssl_client_CA_keys_dir }}/{{ maia_postgres_key_file }}"
+    dest: "{{ maia_postgres_key_path }}"
+    owner: "{{ maia_user }}"
+    group: "{{ maia_group }}"
+    mode: 0600
+  tags:
+    - setup
+    - ssl
+  register: maia_postgres_key
+
+- name: Check maia keytab
+  file:
+    path: "{{ maia_keytab_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ maia_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+# Set up the maia.conf and maiad.conf files
+
+- name: Create maia.conf file
+  template:
+    src: maia.conf.j2
+    dest: "{{ maia_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: maia_conf
+
+- name: Create maiad.conf file
+  template:
+    src: maiad.conf.j2
+    dest: "{{ maiad_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: maiad_conf
+
+# Set up a cron job to periodically refresh the maia user's
+# Kerberos credentials
+
+- name: Add cron job to refresh maiad user's credentials
+  cron:
+    name: "Refresh maia Kerberos credentials"
+    minute: "0"
+    hour: "*/6"
+    user: "{{ maia_user }}"
+    job: "{{ kinit_bin }} -k -t {{ maia_keytab_path }} {{ maia_principal }}"
+  tags:
+    - setup
+
+# Enable maiad is enabled in rc.conf and ensure the daemon is running.
+
+- name: Enable maiad in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^maiad_enable="
+    line: "maiad_enable=YES"
+  tags:
+    - setup
+
+- name: Enable clamav-freshclam in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^clamav_freshclam_enable="
+    line: "clamav_freshclam_enable=YES"
+  tags:
+    - setup
+
+- name: Enable clamav-clamd in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^clamav_clamd_enable="
+    line: "clamav_clamd_enable=YES"
+  tags:
+    - setup
+
+- name: Ensure maiad is running
+  service:
+    name: "{{ maiad_service }}"
+    state: started
+
+- name: Restart maiad
+  service:
+    name: "{{ maiad_service }}"
+    state: restarted
+  tags:
+    - ssl
+    - config
+  when: maia_postgres_cert.changed or
+        maia_postgres_key.changed or
+        maiad_conf.changed or
+        maia_conf.changed
+
+- name: Ensure clamav-freshclam is running
+  service:
+    name: "{{ freshclam_service }}"
+    state: started
+
+- name: Restart clamav-freshclam
+  service:
+    name: "{{ freshclam_service }}"
+    state: restarted
+  tags:
+    - ssl
+    - config
+  when: maia_conf.changed
+
+- name: Ensure clamav-clamd is running
+  service:
+    name: "{{ clamd_service }}"
+    state: started
+
+- name: Restart clamav-clamd
+  service:
+    name: "{{ clamd_service }}"
+    state: restarted
+  tags:
+    - ssl
+    - config
+  when: maia_conf.changed

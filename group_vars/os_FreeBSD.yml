@@ -5,13 +5,16 @@ conf_dir: "/etc"
 local_dir: "/usr/local"
 local_conf_dir: "{{ local_dir }}/etc"
 var_dir: "/var"
-run_dir: "{{ var_dir }}/run"
 db_dir: "{{ var_dir }}/db"
+log_dir: "{{ var_dir }}/log"
+run_dir: "{{ var_dir }}/run"
 queue_dir: "{{ var_dir }}/spool"
 local_var_dir: "{{ local_dir }}/var"
 local_lib_dir: "{{ local_dir }}/lib"
 local_libexec_dir: "{{ local_dir }}/libexec"
+local_bin_dir: "{{ local_dir }}/bin"
 local_sbin_dir: "{{ local_dir }}/sbin"
+local_share_dir: "{{ local_dir }}/share"
 
 pam_dir: "{{ conf_dir }}/pam.d"
 keytabs_dir: "{{ conf_dir }}/keytabs"
@@ -37,6 +40,8 @@ sendmail_bin: "{{ local_sbin_dir }}/sendmail"
 
 root_user: root
 root_group: wheel
+
+mail_group: mail
 
 nslcd_user: nslcd
 nslcd_group: nslcd
@@ -67,6 +72,13 @@ dovecot_login_uid: 143
 
 maia_group: vscan
 maia_user: vscan
+maia_gid: 110
+maia_uid: 110
+
+clamav_group: clamav
+clamav_user: clamav
+clamav_gid: 106
+clamav_uid: 106
 
 # Service names
 
@@ -77,3 +89,6 @@ saslauthd_service: "saslauthd"
 slapd_service: "slapd"
 dovecot_service: "dovecot"
 postfix_service: "postfix"
+maiad_service: "maiad"
+freshclam_service: "clamav-freshclam"
+clamd_service: "clamav-clamd"
