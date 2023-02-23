@@ -85,6 +85,11 @@ postgres_user: postgres
 postgres_gid: 70
 postgres_uid: 70
 
+www_group: www
+www_user: www
+www_gid: 80
+www_uid: 80
+
 # Service names
 
 sshd_service: "sshd"
@@ -98,3 +103,4 @@ maiad_service: "maiad"
 freshclam_service: "clamav-freshclam"
 clamd_service: "clamav-clamd"
 postgres_service: "postgresql"
+www_service: "apache24"

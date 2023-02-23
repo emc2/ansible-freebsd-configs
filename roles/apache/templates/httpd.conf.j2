@@ -1,0 +1,229 @@
+ServerRoot "{{ www_prefix }}"
+
+LoadModule authn_core_module libexec/apache24/mod_authn_core.so
+LoadModule authz_host_module libexec/apache24/mod_authz_host.so
+LoadModule authz_user_module libexec/apache24/mod_authz_user.so
+LoadModule authz_core_module libexec/apache24/mod_authz_core.so
+LoadModule access_compat_module libexec/apache24/mod_access_compat.so
+LoadModule auth_basic_module libexec/apache24/mod_auth_basic.so
+LoadModule reqtimeout_module libexec/apache24/mod_reqtimeout.so
+LoadModule filter_module libexec/apache24/mod_filter.so
+LoadModule mime_module libexec/apache24/mod_mime.so
+LoadModule log_config_module libexec/apache24/mod_log_config.so
+LoadModule env_module libexec/apache24/mod_env.so
+LoadModule headers_module libexec/apache24/mod_headers.so
+LoadModule setenvif_module libexec/apache24/mod_setenvif.so
+LoadModule version_module libexec/apache24/mod_version.so
+LoadModule mpm_prefork_module libexec/apache24/mod_mpm_prefork.so
+LoadModule unixd_module libexec/apache24/mod_unixd.so
+LoadModule status_module libexec/apache24/mod_status.so
+LoadModule autoindex_module libexec/apache24/mod_autoindex.so
+LoadModule cgid_module libexec/apache24/mod_cgid.so
+LoadModule dir_module libexec/apache24/mod_dir.so
+LoadModule alias_module libexec/apache24/mod_alias.so
+LoadModule rewrite_module libexec/apache24/mod_rewrite.so
+LoadModule ssl_module libexec/apache24/mod_ssl.so
+LoadModule socache_shmcb_module libexec/apache24/mod_socache_shmcb.so
+LoadModule xml2enc_module libexec/apache24/mod_xml2enc.so
+LoadModule proxy_module libexec/apache24/mod_proxy.so
+LoadModule proxy_http_module libexec/apache24/mod_proxy_http.so
+LoadModule proxy_html_module libexec/apache24/mod_proxy_html.so
+LoadModule proxy_ajp_module libexec/apache24/mod_proxy_ajp.so
+LoadModule auth_kerb_module libexec/apache24/mod_auth_kerb.so
+LoadModule php_module libexec/apache24/libphp.so
+
+# Third party modules
+IncludeOptional etc/apache24/modules.d/[0-9][0-9][0-9]_*.conf
+
+ServerTokens Prod
+
+<IfModule unixd_module>
+User {{ www_user }}
+Group {{ www_user }}
+</IfModule>
+
+Listen 80
+Listen 443
+
+ServerAdmin admin@{{ network_name }}
+
+Include etc/apache24/Includes/*.conf
+
+<Directory />
+    AllowOverride None
+    Order deny,allow
+    Require all denied
+    Deny from all
+</Directory>
+
+<Directory {{ www_virtual_host_dir }}/{{ network_name }}/>
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Order allow,deny
+    Require all granted
+    Allow from all
+</Directory>
+
+<Files ".ht*">
+    Require all denied
+</Files>
+
+<FilesMatch "^\.ht">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</FilesMatch>
+
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+<FilesMatch "\.phps$">
+     SetHandler application/x-httpd-php-source
+</FilesMatch>
+
+<VirtualHost *:80>
+  ServerAdmin admin@{{ network_name }}
+  ServerName {{ ansible_fqdn }}
+  ServerAlias {{ ansible_fqdn }}
+  ProxyRequests Off
+  Redirect permanent / https://{{ ansible_fqdn }}/
+</VirtualHost>
+
+<VirtualHost _default_:443>
+    DocumentRoot "{{ www_virtual_host_dir }}/{{ network_name }}/"
+    ServerName {{ ansible_fqdn }}:443
+    ServerAdmin admin@{{ network_name }}
+    ErrorLog "/var/log/httpd-error.log"
+    TransferLog "/var/log/httpd-access.log"
+    SSLEngine on
+    SSLCertificateFile "{{ www_cert_path }}"
+    SSLCertificateKeyFile "{{ www_key_path }}"
+    SSLCACertificateFile "{{ ssl_client_CA_cert_path }}"
+    SSLCARevocationFile "{{ ssl_client_CA_crl_path }}"
+    SSLCARevocationCheck chain
+    SSLVerifyClient optional
+    BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+    Header always set Strict-Transport-Security "max-age=15768000"
+
+{% for path in www_auth_paths %}
+    <Location /{{ path }}/>
+        AuthType Kerberos
+        AuthName "Please enter your Kerberos password"
+        KrbAuthRealms "{{ kerberos_realm }}"
+        Krb5Keytab "{{ www_keytab_path }}"
+        KrbMethodK5Passwd on
+        KrbMethodNegotiate on
+        KrbSaveCredentials on
+        KrbLocalUserMapping on
+        KrbAuthoritative on
+        KrbVerifyKDC on
+        KrbServiceName HTTP
+        Require valid-user
+    </Location>
+{% endfor %}
+
+
+    AllowEncodedSlashes NoDecode
+    ProxyPreserveHost On
+{% for path, proxy in www_proxy_paths.items() %}
+    ProxyPass        /{{ path }} {{ proxy.url }} {{ proxy.fwd_flags }}
+    ProxyPassReverse /{{ path }} {{ proxy.url }} {{ proxy.rev_flags }}
+{% endfor %}
+    RequestHeader set X-Forwarded-Proto "https"
+    RequestHeader set X-Forwarded-Port "443"
+
+    <FilesMatch "\.(cgi|shtml|phtml|php)$">
+        SSLOptions +StdEnvVars
+    </FilesMatch>
+
+    <Directory "{{ www_prefix }}/www/apache24/cgi-bin">
+        SSLOptions +StdEnvVars
+    </Directory>
+    CustomLog "/var/log/httpd-ssl_request.log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+</VirtualHost>
+
+ErrorLog "/var/log/httpd-error.log"
+
+<IfModule log_config_module>
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+    <IfModule logio_module>
+      # You need to enable mod_logio.c to use %I and %O
+      LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+    </IfModule>
+
+    CustomLog "/var/log/httpd-access.log" combined
+</IfModule>
+
+<IfModule mime_module>
+    TypesConfig etc/apache24/mime.types
+
+    AddEncoding         x-compress              .Z
+    AddEncoding         x-gzip                  .gz .tgz
+    AddType     application/x-gzip              .tgz
+    AddType     application/x-compress          .Z
+    AddType     application/x-gzip              .gz .tgz
+    AddType     application/x-x509-ca-cert      .crt
+    AddType     application/x-pkcs7-crl         .crl
+
+</IfModule>
+
+<IfModule ssl_module>
+    SSLRandomSeed startup builtin
+    SSLRandomSeed connect builtin
+    SSLPassPhraseDialog  builtin
+    SSLSessionCache        "shmcb:/var/run/ssl_scache(512000)"
+    SSLSessionCacheTimeout  300
+    SSLProtocol             all -SSLv3 -SSLv2
+    SSLCipherSuite          {{ openssl_ciphers }}
+    SSLHonorCipherOrder     on
+    SSLCompression          off
+    SSLSessionTickets       off
+
+    # OCSP Stapling, only in httpd 2.3.3 and later
+    SSLUseStapling          on
+    SSLStaplingResponderTimeout 5
+    SSLStaplingReturnResponderErrors off
+    SSLStaplingCache        shmcb:/var/run/ocsp(128000)
+
+</IfModule>
+
+DirectoryIndex index.html index.htm index.php
+
+<IfModule log_config_module>
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+    <IfModule logio_module>
+      LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+    </IfModule>
+
+    CustomLog "/var/log/httpd-access.log" common
+</IfModule>
+
+<IfModule alias_module>
+    ScriptAlias /cgi-bin/ "{{ www_prefix }}/www/apache24/cgi-bin/"
+</IfModule>
+
+#
+# "/usr/local/www/apache24/cgi-bin" should be changed to whatever your ScriptAliased
+# CGI directory exists, if you have that configured.
+#
+<Directory "{{ www_prefix }}/www/apache24/cgi-bin">
+    AllowOverride None
+    Options None
+    Require all granted
+</Directory>
+
+<IfModule setenvif_module>
+BrowserMatch "MSIE 10.0;" bad_DNT
+</IfModule>
+
+<IfModule headers_module>
+RequestHeader unset DNT env=bad_DNT
+</IfModule>
+
+Include etc/apache24/Includes/*.conf

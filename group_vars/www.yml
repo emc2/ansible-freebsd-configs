@@ -1,0 +1,4 @@
+---
+maia_principal: "maia@{{ kerberos_realm }}"
+maia_keytab_file: "maia.keytab"
+maia_keytab_path: "{{ keytabs_dir }}/{{ maia_keytab_file }}"

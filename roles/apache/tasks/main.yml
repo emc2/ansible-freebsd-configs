@@ -1,0 +1,143 @@
+# Ensure that www user and group exist
+
+- name: Create www group
+  group:
+    name: "{{ www_group }}"
+    gid: "{{ www_gid }}"
+  tags:
+    - setup
+
+- name: Create www user
+  user:
+    name: "{{ www_user }}"
+    uid: "{{ www_uid }}"
+    group: "{{ www_group }}"
+    comment: "Apache web server"
+    home: "{{ nonexistent_home }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
+# Copy certificates and keys into place
+
+- name: Install https certificate
+  copy:
+    src: "{{ control_letsencrypt_www_cert_path }}"
+    dest: "{{ www_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+  register: www_https_cert
+
+- name: Install https key
+  copy:
+    src: "{{ control_letsencrypt_www_key_path }}"
+    dest: "{{ www_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ www_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+  register: www_https_key
+
+- name: Check https keytab
+  file:
+    path: "{{ www_keytab_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ www_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+# Install CA cert and CRL to a www-accessible directory
+
+- name: Install CA cert to web directory
+  copy:
+    src="/etc/ssl/CA/certs/ca-cert.pem"
+    dest="{{ www_ca_info_dir }}/ca-cert.pem"
+    owner=root
+    group=wheel
+    mode=644
+  tags:
+    - ssl
+    - setup
+
+- name: Install CA CRL to web directory
+  copy:
+    src="/etc/ssl/CA/crl/crl.pem"
+    dest="{{ www_ca_info_dir }}/crl.pem"
+    owner=root
+    group=wheel
+    mode=644
+  tags:
+    - ssl
+    - setup
+
+# Set up a cron job to periodically refresh the maia user's
+# Kerberos credentials.
+#
+# Note: this is here for the maia mailguard web frontend
+
+- name: Add cron job to refresh maiad user's credentials
+  cron:
+    name: "Refresh maia Kerberos credentials"
+    minute: "0"
+    hour: "*/6"
+    user: "{{ www_user }}"
+    job: "{{ kinit_bin }} -k -t {{ maia_keytab_path }} {{ maia_principal }}"
+  tags:
+    - setup
+
+- name: Add cron job to refresh apache user's credentials
+  cron:
+    name: "Refresh maia Kerberos credentials"
+    minute: "0"
+    hour: "*/6"
+    user: "{{ www_user }}"
+    job: "{{ kinit_bin }} -k -t {{ www_keytab_path }} {{ www_principal }}"
+  tags:
+    - setup
+
+- name: Create httpd.conf file
+  template:
+    src: httpd.conf.j2
+    dest: "{{ www_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+  register: httpd_conf
+
+# Enable apache is enabled in rc.conf and ensure the daemon is running.
+
+- name: Enable apache in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^apache_enable24="
+    line: "apache_enable24=YES"
+  tags:
+    - setup
+
+- name: Ensure apache is running
+  service:
+    name: "{{ www_service }}"
+    state: started
+
+- name: Restart apache
+  service:
+    name: "{{ www_service }}"
+    state: restarted
+  tags:
+    - config
+    - ssl
+  when: www_https_cert.changed or
+        www_https_key.changed or
+        httpd_conf.changed

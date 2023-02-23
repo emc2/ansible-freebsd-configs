@@ -10,3 +10,7 @@ ldap_hosts_dn: "ou=hosts,{{ ldap_base_dn }}"
 
 ldap_uris:
   - ldaps://ldap.example.com
+
+www_auth_paths:
+
+www_proxy_paths:
