@@ -90,6 +90,11 @@ www_user: www
 www_gid: 80
 www_uid: 80
 
+tor_group: _tor
+tor_user: _tor
+tor_gid: 256
+tor_uid: 256
+
 # Service names
 
 sshd_service: "sshd"
@@ -104,3 +109,4 @@ freshclam_service: "clamav-freshclam"
 clamd_service: "clamav-clamd"
 postgres_service: "postgresql"
 www_service: "apache24"
+tor_service: "tor"

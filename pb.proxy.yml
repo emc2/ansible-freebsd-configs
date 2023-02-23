@@ -1,10 +1,10 @@
-- name: Configure www server
+- name: Configure proxy
   hosts:
-    - www
+    - proxy
   become: yes
   pre_tasks:
     - name: Classify hosts depending on their OS distribution
       group_by:
         key: "os_{{ ansible_facts['distribution'] }}"
   roles:
-    - apache
+    - tor

@@ -1,0 +1,8 @@
+---
+tor_bandwidth: "128 Kbytes"
+tor_burst_bandwidth: "512 KBytes"
+tor_nickname: "CHANGE_ME"
+tor_data_dir: "{{ db_dir }}/tor"
+tor_conf_dir: "{{ local_conf_dir }}/tor"
+torrc_file: "torrc"
+torrc_path: "{{ tor_conf_dir }}/{{ torrc_file }}"
