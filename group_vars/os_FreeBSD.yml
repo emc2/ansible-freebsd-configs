@@ -36,6 +36,16 @@ empty_dir: "{{ var_dir }}/empty"
 kinit_bin: "/usr/bin/kinit"
 sendmail_bin: "{{ local_sbin_dir }}/sendmail"
 
+# OpenJDK
+
+openjdk_version: 8
+openjdk_dir: "{{ local_dir }}/openjdk{{ openjdk_version }}"
+openjdk_jre_dir: "{{ openjdk_dir }}/jre"
+openjdk_jre_lib_dir: "{{ openjdk_jre_dir }}/lib"
+openjdk_jre_security_dir: "{{ openjdk_jre_lib_dir }}/security"
+openjdk_cacerts_keystore_file: "cacerts"
+openjdk_cacerts_keystore_path: "{{ openjdk_jre_security_dir }}/{{ openjdk_cacerts_keystore_file }}"
+
 # Definition of users and groups
 
 root_user: root

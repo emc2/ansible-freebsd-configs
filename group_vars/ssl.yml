@@ -3,6 +3,7 @@ ssl_conf_dir: "{{ conf_dir }}/ssl"
 ssl_certs_dir: "{{ ssl_conf_dir }}/certs"
 ssl_keys_dir: "{{ ssl_conf_dir }}/private"
 ssl_crl_dir: "{{ ssl_conf_dir }}/crl"
+ssl_keystores_dir: "{{ ssl_conf_dir }}/keystores"
 
 ssl_client_CA_cert_file: "client-ca-cert.pem"
 ssl_client_CA_cert_path: "{{ ssl_certs_dir }}/{{ ssl_client_CA_cert_file }}"
@@ -15,6 +16,10 @@ ssl_server_CA_cert_path: "{{ ssl_certs_dir }}/{{ ssl_server_CA_cert_file }}"
 
 ssl_server_CA_crl_file: "server-crl.pem"
 ssl_server_CA_crl_path: "{{ ssl_crl_dir }}/{{ ssl_server_CA_crl_file }}"
+
+ssl_ca_keystore_file: "ca.keystore"
+ssl_ca_keystore_path: "{{ ssl_keystores_dir }}/{{ ssl_ca_keystore_file }}"
+ssl_ca_keystore_password: "changeit"
 
 # Directories on the Ansible controller
 

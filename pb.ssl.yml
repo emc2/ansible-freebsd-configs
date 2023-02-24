@@ -1,3 +1,4 @@
+
 - name: Configure SSL CA certs and CRLs
   hosts:
     - ssl
@@ -8,3 +9,15 @@
         key: "os_{{ ansible_facts['distribution'] }}"
   roles:
     - ssl
+
+- name: Configure Java CA truststores
+  hosts:
+    - java_truststore
+  become: yes
+  pre_tasks:
+    - name: Classify hosts depending on their OS distribution
+      group_by:
+        key: "os_{{ ansible_facts['distribution'] }}"
+  roles:
+    - java_truststore
+

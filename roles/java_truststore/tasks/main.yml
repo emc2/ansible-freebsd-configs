@@ -1,0 +1,35 @@
+# Setup CA keystore for Java
+
+- name: Create SSL directories
+  file:
+    path="{{ ssl_keystores_dir }}"
+    state=directory
+    owner=root
+    group=wheel
+    mode=755
+  tags:
+    - setup
+
+- name: Copy default cacerts keystore
+  copy:
+    src: "{{ openjdk_cacerts_keystore_path }}"
+    dest: "{{ ssl_ca_keystore_path }}"
+    remote_src: yes
+  tags:
+    - config
+    - setup
+    - ssl
+  when: server_ca_ssl.changed
+
+- name: Import SSL CA certificate into keystore
+  java_cert:
+    cert_path: "{{ ssl_server_CA_cert_path }}"
+    cert_alias: "{{ network_name }}"
+    keystore_path: "{{ ssl_ca_keystore_path }}"
+    keystore_pass: "{{ ssl_ca_keystore_password }}"
+    state: present
+  tags:
+    - config
+    - setup
+    - ssl
+  when: server_ca_ssl.changed
