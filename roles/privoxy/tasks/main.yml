@@ -1,0 +1,57 @@
+# Ensure that privoxy user and group exist
+
+- name: Create prioxy group
+  group:
+    name: "{{ privoxy_group }}"
+    gid: "{{ privoxy_gid }}"
+  tags:
+    - setup
+
+- name: Create privoxy user
+  user:
+    name: "{{ privoxy_user }}"
+    group: "{{ privoxy_group }}"
+    comment: "Privoxy proxy user"
+    uid: "{{ privoxy_uid }}"
+    home: "{{ nonexistent_home }}"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
+# Set up the config files
+
+- name: Create config file
+  template:
+    src: config.j2
+    dest: "{{ privoxy_conf_path }}"
+    owner: "{{ privoxy_user }}"
+    group: "{{ privoxy_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+  register: privoxy_conf
+
+# Enable privoxy in rc.conf and ensure the daemon is running.
+
+- name: Enable privoxy in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^privoxy_enable="
+    line: "privoxy_enable=YES"
+  tags:
+    - setup
+
+- name: Ensure privoxy is running
+  service:
+    name: "{{ privoxy_service }}"
+    state: started
+
+- name: Restart privoxy
+  service:
+    name: "{{ privoxy_service }}"
+    state: restarted
+  tags:
+    - config
+  when: privoxy_conf.changed

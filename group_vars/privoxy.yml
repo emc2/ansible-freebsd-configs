@@ -1,0 +1,6 @@
+---
+privoxy_conf_dir: "{{ local_conf_dir }}/privoxy"
+privoxy_log_dir: "{{ log_dir }}/privoxy"
+privoxy_doc_dir: "/usr/local/share/doc/privoxy"
+privoxy_conf_file: "config"
+privoxy_conf_path: "{{ privoxy_conf_dir }}/{{ privoxy_conf_file }}"

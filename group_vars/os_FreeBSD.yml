@@ -95,6 +95,11 @@ tor_user: _tor
 tor_gid: 256
 tor_uid: 256
 
+privoxy_group: privoxy
+privoxy_user: privoxy
+privoxy_gid: 201
+privoxy_uid: 201
+
 # Service names
 
 sshd_service: "sshd"
@@ -110,3 +115,4 @@ clamd_service: "clamav-clamd"
 postgres_service: "postgresql"
 www_service: "apache24"
 tor_service: "tor"
+privoxy_service: "privoxy"
