@@ -1,0 +1,114 @@
+# Ensure that squid user and group exist
+
+- name: Create squid group
+  group:
+    name: "{{ squid_group }}"
+    gid: "{{ squid_gid }}"
+  tags:
+    - setup
+
+- name: Create squid user
+  user:
+    name: "{{ squid_user }}"
+    uid: "{{ squid_uid }}"
+    group: "{{ squid_group }}"
+    groups: "{{ sasl_group }}"
+    comment: "squid caching proxy pseudo-user"
+    home: "{{ squid_data_dir }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+     - setup
+
+# Copy certificate and key into place
+
+- name: Install squid certificate
+  copy:
+    src: "{{ control_ssl_server_CA_certs_dir }}/{{ squid_cert_file }}"
+    dest: "{{ squid_cert_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - ssl
+
+- name: Install squid key
+  copy:
+    src: "{{ control_ssl_server_CA_keys_dir }}/{{ squid_key_file }}"
+    dest: "{{ squid_key_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ squid_group }}"
+    mode: 0640
+  tags:
+    - setup
+    - ssl
+
+- name: Check squid keytab
+  file:
+    path: "{{ squid_keytab_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ squid_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+# Set up the squid SASL config file.  This tells SASL to use saslauthd, where to
+# find the keytab, and where to find the mux.
+
+- name: Install basic_sasl_auth.conf
+  template:
+    src: basic_sasl_auth.conf.j2
+    dest: "{{ squid_sasl_file }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+
+# Set up the squid.conf file
+
+- name: Create squid.conf file
+  template:
+    src: squid.conf.j2
+    dest: "{{ squid_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: squid_conf
+
+# Enable squid is enabled in rc.conf and ensure the daemon is running.
+
+- name: Enable squid in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^squid_enable="
+    line: "squid_enable=YES"
+  tags:
+    - setup
+
+- name: Set squid kerberos keytab
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^squid_krb5_ktname"
+    line: "squid_krb5_ktname={{ squid_keytab_path }}"
+  tags:
+    - setup
+
+- name: Ensure squid is running
+  service:
+    name: "{{ squid_service }}"
+    state: started
+
+- name: Restart squid
+  service:
+    name: "{{ squid_service }}"
+    state: restarted
+  tags:
+    - config
+    - ssl

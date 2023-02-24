@@ -100,6 +100,11 @@ privoxy_user: privoxy
 privoxy_gid: 201
 privoxy_uid: 201
 
+squid_user: squid
+squid_group: squid
+squid_uid: 100
+squid_gid: 100
+
 # Service names
 
 sshd_service: "sshd"
@@ -116,3 +121,4 @@ postgres_service: "postgresql"
 www_service: "apache24"
 tor_service: "tor"
 privoxy_service: "privoxy"
+squid_service: "squid"

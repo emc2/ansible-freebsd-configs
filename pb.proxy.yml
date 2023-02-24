@@ -9,3 +9,5 @@
   roles:
     - tor
     - privoxy
+    - squid
+
