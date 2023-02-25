@@ -106,8 +106,8 @@ Include etc/apache24/Includes/*.conf
     BrowserMatch "MSIE [2-5]" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
     Header always set Strict-Transport-Security "max-age=15768000"
 
-{% for path in www_auth_paths %}
-    <Location /{{ path }}/>
+{% for name, webapp in tomcat_webapps.items() %}
+    <Location /{{ name }}/>
         AuthType Kerberos
         AuthName "Please enter your Kerberos password"
         KrbAuthRealms "{{ kerberos_realm }}"
@@ -126,9 +126,9 @@ Include etc/apache24/Includes/*.conf
 
     AllowEncodedSlashes NoDecode
     ProxyPreserveHost On
-{% for path, proxy in www_proxy_paths.items() %}
-    ProxyPass        /{{ path }} {{ proxy.url }} {{ proxy.fwd_flags }}
-    ProxyPassReverse /{{ path }} {{ proxy.url }} {{ proxy.rev_flags }}
+{% for name, webapp in tomcat_webapps.items() %}
+    ProxyPass        /{{ name }} {{ webapp.proxy_url }} {{ webapp.proxy_fwd_flags }}
+    ProxyPassReverse /{{ name }} {{ webapp.proxy_url }} {{ webapp.proxy_rev_flags }}
 {% endfor %}
     RequestHeader set X-Forwarded-Proto "https"
     RequestHeader set X-Forwarded-Port "443"

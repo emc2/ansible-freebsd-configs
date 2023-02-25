@@ -1,7 +1,9 @@
-{% set uris = [] %}
-{% for item in ldap_uris %}
+{% set uris = [ ldap_primary_uri ] %}
+{% if ldap_alternate_uris is defined %}
+{% for item in ldap_alternate_uris %}
 {% set uris = uris.append(item) %}
 {% endfor %}
+{% endif %}
 server_host = {{ uris | join(" ") }}
 search_base = {{ ldap_users_dn }}
 version = 3

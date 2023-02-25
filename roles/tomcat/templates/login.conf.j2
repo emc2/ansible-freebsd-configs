@@ -1,0 +1,26 @@
+com.sun.security.jgss.krb5.accept {
+  com.sun.security.auth.module.Krb5LoginModule REQUIRED
+    useKeyTab = true
+    keyTab = "{{ tomcat_keytab_path }}"
+    storeKey = true
+    principal = "{{ tomcat_principal }}";
+};
+com.sun.security.jgss.krb5.initiate {
+  com.sun.security.auth.module.Krb5LoginModule REQUIRED
+    useKeyTab = true
+    keyTab = "{{ tomcat_keytab_path }}"
+    storeKey = true
+    principal = "{{ tomcat_principal }}";
+};
+{% for name, webapp in tomcat_webapps.items() %}
+{% if name in group_names %}
+{{ name }} {
+   com.sun.security.auth.module.Krb5LoginModule REQUIRED
+     useKeyTab = true
+     keyTab = "{{ tomcat_keytab_path }}"
+     principal = "{{ webapp.principal }}"
+     storeKey = true
+     doNotPrompt = true
+}
+{% endif %}
+{% endfor %}

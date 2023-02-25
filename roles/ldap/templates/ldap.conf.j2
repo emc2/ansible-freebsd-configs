@@ -1,7 +1,9 @@
-{% set uris = [] %}
-{% for item in ldap_uris %}
+{% set uris = [ ldap_primary_uri ] %}
+{% if ldap_alternate_uris is defined %}
+{% for item in ldap_alternate_uris %}
 {% set uris = uris.append(item) %}
 {% endfor %}
+{% endif %}
 BASE            {{ ldap_base_dn }}
 URI             {{ uris | join(" ") }}
 TLS_CACERT      {{ ssl_server_CA_cert_path }}

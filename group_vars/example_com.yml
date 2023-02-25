@@ -8,9 +8,16 @@ ldap_users_dn: "ou=people,{{ ldap_base_dn }}"
 ldap_groups_dn: "ou=groups,{{ ldap_base_dn }}"
 ldap_hosts_dn: "ou=hosts,{{ ldap_base_dn }}"
 
-ldap_uris:
-  - ldaps://ldap.example.com
+ldap_primary_uri: ldaps://ldap.example.com
 
-www_auth_paths:
+ldap_alternate_uris:
+  - ldaps://ldap2.example.com
 
-www_proxy_paths:
+tomcat_webapps:
+  example:
+    group_name: "example"
+    kerberos_auth: true
+    principal: example/example.example.com@EXAMPLE.COM
+    url: ajp://example.example.com:8008
+    proxy_fwd_flags: nocanon
+    proxy_rev_flags:

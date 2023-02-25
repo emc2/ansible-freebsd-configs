@@ -1,7 +1,6 @@
-
-- name: Configure SSL CA certs and CRLs
+- name: Configure wikis
   hosts:
-    - ssl
+    - wiki
   become: yes
   pre_tasks:
     - name: Classify hosts depending on their OS distribution
@@ -9,4 +8,4 @@
         key: "os_{{ ansible_facts['distribution'] }}"
   roles:
     - ssl
-
+    - tomcat
