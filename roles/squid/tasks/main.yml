@@ -33,6 +33,7 @@
   tags:
     - setup
     - ssl
+  register: squid_https_cert
 
 - name: Install squid key
   copy:
@@ -44,6 +45,7 @@
   tags:
     - setup
     - ssl
+  register: squid_https_key
 
 - name: Check squid keytab
   file:
@@ -112,3 +114,7 @@
   tags:
     - config
     - ssl
+  when: server_ca_ssl.changed or
+        squid_https_cert.changed or
+        squid_dttps_key.changed or
+        squid_conf.changed

@@ -115,4 +115,5 @@
         postgres_cert.changed or
         postgres_key.changed or
         postgresql.conf.changed or
-        pg_hba.changed
+        pg_hba.changed or
+        server_ca_ssl.changed

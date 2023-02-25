@@ -174,4 +174,5 @@
         dovecot_mail_cert.changed or
         dovecot_mail_key.changed or
         dovecot_ldap_conf.changed or
-        dovecot_conf.changed
+        dovecot_conf.changed or
+        server_ca_ssl.changed

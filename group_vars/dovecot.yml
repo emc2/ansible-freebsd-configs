@@ -1,8 +1,8 @@
 ---
 dovecot_run_dir: "{{ run_dir }}/dovecot"
-dovecot_ldap_cert_file: "{{ ansible_hostname }}-dovecot-ldap-cert.pem"
+dovecot_ldap_cert_file: "{{ ansible_fqdn }}-dovecot-ldap-cert.pem"
 dovecot_ldap_cert_path: "{{ ssl_certs_dir }}/{{ dovecot_ldap_cert_file }}"
-dovecot_ldap_key_file: "{{ ansible_hostname }}-dovecot-ldap-key.pem"
+dovecot_ldap_key_file: "{{ ansible_fqdn }}-dovecot-ldap-key.pem"
 dovecot_ldap_key_path: "{{ ssl_keys_dir }}/{{ dovecot_ldap_key_file }}"
 dovecot_mail_cert_path: "{{ ssl_certs_dir }}/imap-cert.pem"
 dovecot_mail_key_path: "{{ ssl_keys_dir }}/imap-key.pem"

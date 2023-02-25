@@ -126,4 +126,5 @@
   when: slapd_conf.changed or
         slapd_access.changed or
         slapd_cert.changed or
-        slapd_key.changed
+        slapd_key.changed or
+        server_ca_ssl.changed

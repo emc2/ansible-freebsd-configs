@@ -1,9 +1,9 @@
 ---
 squid_data_dir: "{{ var_dir }}/squid"
 squid_modules_dir: "{{ local_libexec_dir }}/squid"
-squid_cert_file: "{{ ansible_hostname }}-squid-cert.pem"
+squid_cert_file: "{{ ansible_fqdn }}-squid-cert.pem"
 squid_cert_path: "{{ ssl_certs_dir }}/{{ squid_cert_file }}"
-squid_key_file: "{{ ansible_hostname }}-squid-key.pem"
+squid_key_file: "{{ ansible_fqdn }}-squid-key.pem"
 squid_key_path: "{{ ssl_keys_dir }}/{{ squid_key_file }}"
 squid_conf_dir: "{{ local_conf_dir }}/squid"
 squid_conf_file: "squid.conf"

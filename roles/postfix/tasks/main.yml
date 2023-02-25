@@ -169,4 +169,5 @@
         postfix_mail_key.changed or
         postfix_ldap_cf.changed or
         postfix_main_cf.changed or
-        postfix_master_cf.changed
+        postfix_master_cf.changed or
+        server_ca_ssl.changed

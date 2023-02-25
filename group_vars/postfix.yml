@@ -1,7 +1,7 @@
 ---
-postfix_ldap_cert_file: "{{ ansible_hostname }}-postfix-ldap-cert.pem"
+postfix_ldap_cert_file: "{{ ansible_fqdn }}-postfix-ldap-cert.pem"
 postfix_ldap_cert_path: "{{ ssl_certs_dir }}/{{ postfix_ldap_cert_file }}"
-postfix_ldap_key_file: "{{ ansible_hostname }}-postfix-ldap-key.pem"
+postfix_ldap_key_file: "{{ ansible_fqdn }}-postfix-ldap-key.pem"
 postfix_ldap_key_path: "{{ ssl_keys_dir }}/{{ postfix_ldap_key_file }}"
 postfix_mail_cert_path: "{{ ssl_certs_dir }}/smtp-cert.pem"
 postfix_mail_key_path: "{{ ssl_keys_dir }}/smtp-key.pem"

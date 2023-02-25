@@ -181,4 +181,7 @@
   tags:
     - ssl
     - config
-  when: maia_conf.changed
+  when: maia_conf.changed or
+        server_ca_ssl.changed or
+        maia_postgres_key.changed or
+        maia_postgres_cert.changed

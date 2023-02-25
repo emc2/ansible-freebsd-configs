@@ -7,4 +7,5 @@
       group_by:
         key: "os_{{ ansible_facts['distribution'] }}"
   roles:
+    - ssl
     - postgres
