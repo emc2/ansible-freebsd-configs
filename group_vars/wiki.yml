@@ -1,5 +1,5 @@
 ---
-xwiki_data_dir: "{{ db_dir }}/xwiki/"
+xwiki_data_dir: "{{ db_dir }}/xwiki"
 manager_gui_group: "wiki-tomcat-manager-gui"
 manager_script_group: "wiki-tomcat-manager-script"
 manager_jmx_group: "wiki-tomcat-manager-jmx"
