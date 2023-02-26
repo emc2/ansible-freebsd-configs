@@ -1,0 +1,61 @@
+# Set up the config files
+
+- name: Install public wiki config file
+  template:
+    src: "public_wiki.xwiki.cfg.j2"
+    dest: "{{ public_wiki_xwiki_cfg }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+
+- name: Install private wiki config file
+  template:
+    src: "private_wiki.xwiki.cfg.j2"
+    dest: "{{ private_wiki_xwiki_cfg_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+
+- name: Install public wiki hibernate config file
+  template:
+    src: "public_wiki.hibernate.cfg.j2"
+    dest: "{{ public_wiki_hibernate_cfg_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+
+- name: Install private wiki hibernate config file
+  template:
+    src: "private_wiki.hibernate.cfg.j2"
+    dest: "{{ private_wiki_hibernate_cfg_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+
+- name: Copying private wiki cache config
+  copy:
+    src: "cache_config.cfg.j2"
+    dest: "{{ private_wiki_cache_config_path }}"
+  tags:
+    - setup
+    - config
+
+- name: Copying public wiki cache config
+  copy:
+    src: "cache_config.cfg.j2"
+    dest: "{{ public_wiki_cache_config_path }}"
+  tags:
+    - setup
+    - config
