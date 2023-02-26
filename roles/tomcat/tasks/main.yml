@@ -183,16 +183,24 @@
 - name: Enable tomcat in rc.conf
   lineinfile:
     dest: "{{ rc_conf }}"
-    regexp: "^tomcat8_enable="
-    line: "tomcat8_enable=YES"
+    regexp: "^{{ tomcat_service }}_enable="
+    line: "{{ tomcat_service }}_enable=YES"
+  tags:
+    - setup
+
+- name: Set tomcat java home
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^{{ tomcat_service }}_java_home="
+    line: "{{ tomcat_service }}_java_home={{ openjdk_dir }}"
   tags:
     - setup
 
 - name: Set tomcat java options
   lineinfile:
     dest: "{{ rc_conf }}"
-    regexp: "^tomcat8_java_opts="
-    line: "tomcat8_java_opts=\"{{ tomcat_java_opts }}\""
+    regexp: "^{{ tomcat_service }}_java_opts="
+    line: "{{ tomcat_service }}_java_opts=\"{{ tomcat_java_opts }}\""
   tags:
     - setup
 

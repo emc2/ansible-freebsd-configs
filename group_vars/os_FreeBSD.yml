@@ -38,7 +38,7 @@ sendmail_bin: "{{ local_sbin_dir }}/sendmail"
 
 # OpenJDK
 
-openjdk_version: 8
+openjdk_version: 17
 openjdk_dir: "{{ local_dir }}/openjdk{{ openjdk_version }}"
 openjdk_jre_dir: "{{ openjdk_dir }}/jre"
 openjdk_jre_lib_dir: "{{ openjdk_jre_dir }}/lib"

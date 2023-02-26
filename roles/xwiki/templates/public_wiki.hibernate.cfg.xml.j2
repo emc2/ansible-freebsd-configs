@@ -20,7 +20,10 @@
     <property name="dbcp.maxTotal">50</property>
     <property name="dbcp.maxIdle">5</property>
     <property name="dbcp.maxWaitMillis">30000</property>
+    <property name="hibernate.dbcp.jmxName">org.apache.dbcp:DataSource=dbcp</property>
     <property name="connection.provider_class">com.xpn.xwiki.store.DBCPConnectionProvider</property>
+
+    <property name="hibernate.schema_update.unique_constraint_strategy">skip</property>
 
     <!-- PostgreSQL configuration.
          Uncomment if you want to use PostgreSQL and comment out other database configurations.
@@ -40,6 +43,10 @@
     <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
     <property name="jdbc.use_streams_for_binary">false</property>
     <property name="xwiki.virtual_mode">schema</property>
+
+    <property name="hibernate.connection.charSet">UTF-8</property>
+    <property name="hibernate.connection.useUnicode">true</property>
+    <property name="hibernate.connection.characterEncoding">utf8</property>
 
     <mapping resource="xwiki.postgresql.hbm.xml"/>
     <mapping resource="feeds.hbm.xml"/>
