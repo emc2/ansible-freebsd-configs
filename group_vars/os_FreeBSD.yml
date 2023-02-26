@@ -120,6 +120,9 @@ tomcat_group: "{{ www_group }}"
 tomcat_uid: "{{ www_uid }}"
 tomcat_gid: "{{ www_gid }}"
 
+xwiki_user: "{{ tomcat_user }}"
+xwiki_group: "{{ tomcat_group }}"
+
 tomcat_version: "8.5"
 
 # Service names

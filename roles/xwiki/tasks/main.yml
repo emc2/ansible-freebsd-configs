@@ -2,6 +2,9 @@
   file:
     path: "{{ xwiki_data_dir }}"
     state: directory
+    owner: "{{ xwiki_user }}"
+    group: "{{ xwiki_group }}"
+    mode: 0755
   tags:
     - setup
 
@@ -9,6 +12,9 @@
   file:
     path: "{{ xwiki_data_dir }}/{{ item }}"
     state: directory
+    owner: "{{ xwiki_user }}"
+    group: "{{ xwiki_group }}"
+    mode: 0755
   tags:
     - setup
   with_items:

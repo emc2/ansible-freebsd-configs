@@ -23,6 +23,9 @@
   file:
     path: "{{ tomcat_home_dir }}"
     state: directory
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: 0755
   tags:
     - setup
 
