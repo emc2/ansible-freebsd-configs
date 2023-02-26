@@ -8,7 +8,9 @@ ldap_users_dn: "ou=people,{{ ldap_base_dn }}"
 ldap_groups_dn: "ou=groups,{{ ldap_base_dn }}"
 ldap_hosts_dn: "ou=hosts,{{ ldap_base_dn }}"
 
-ldap_primary_uri: ldaps://ldap.example.com
+ldap_primary_server_name: ldap.example.com
+ldap_primary_server_port: 636
+ldap_primary_uri: "ldaps://{{ ldap_primary_server_name }}:{{ ldap_primary_server_port }}"
 
 ldap_alternate_uris:
   - ldaps://ldap2.example.com

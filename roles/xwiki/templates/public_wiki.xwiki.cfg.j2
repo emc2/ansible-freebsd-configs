@@ -11,8 +11,8 @@ xwiki.authentication.cookiedomains=
 xwiki.authentication.logoutpage=(/|/[^/]+/|/wiki/[^/]+/)logout/*
 xwiki.authentication.authclass=org.xwiki.contrib.ldap.XWikiLDAPAuthServiceImpl
 xwiki.authentication.ldap=1
-xwiki.authentication.ldap.server={{ ldap_server_name }}
-xwiki.authentication.ldap.port=636
+xwiki.authentication.ldap.server={{ ldap_primary_server_name }}
+xwiki.authentication.ldap.port={{ ldap_primary_server_port }}
 xwiki.authentication.ldap.bind_DN=cn={0},ou=people,{{ ldap_base_dn }}
 xwiki.authentication.ldap.bind_pass={1}
 xwiki.authentication.ldap.validate_password=0
@@ -55,4 +55,3 @@ xwiki.plugins=\
   com.xpn.xwiki.plugin.watchlist.WatchListPlugin
 xwiki.plugin.image.cache.capacity=30
 xwiki.stats.default=0
-
