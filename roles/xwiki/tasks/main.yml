@@ -3,7 +3,7 @@
 - name: Install public wiki config file
   template:
     src: "public_wiki.xwiki.cfg.j2"
-    dest: "{{ public_wiki_xwiki_cfg }}"
+    dest: "{{ public_wiki_xwiki_cfg_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
     mode: 0644
