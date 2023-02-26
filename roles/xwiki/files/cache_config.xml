@@ -13,7 +13,7 @@
      <!--
         The default cache.
      -->
-     <local-cache name="the-default-cache" statistics="true">
+     <local-cache name="default" statistics="true">
         <memory max-count="10000"/>
      </local-cache>
 

@@ -8,5 +8,5 @@
         key: "os_{{ ansible_facts['distribution'] }}"
   roles:
     - ssl
-    - tomcat
     - xwiki
+    - tomcat
