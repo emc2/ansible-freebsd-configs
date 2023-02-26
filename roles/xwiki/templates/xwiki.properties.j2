@@ -1,0 +1,119 @@
+environment.permanentDirectory = {{ xwiki_data_dir }}/{{ wiki_name }}
+rendering.transformations = macro, icon
+xml.htmlElementSanitizer = secure
+xml.htmlElementSanitizer.allowedUriRegexp = ^(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):
+
+#-# [Since 1.7M1]
+#-# The standard cache component implementation to use (can be local or distributed depending on the implementation).
+#-# The default standard cache implementation is Infinispan.
+# cache.defaultCache = infinispan
+
+#-# [Since 1.7M1]
+#-# The local cache implementation to use.
+#-# The default local cache implementation is Infinispan.
+# cache.defaultLocalCache = infinispan/local
+
+extension.oldflavors=org.xwiki.enterprise:xwiki-enterprise-ui-mainwiki
+extension.oldflavors=org.xwiki.enterprise:xwiki-enterprise-ui-wiki
+extension.oldflavors=org.xwiki.manager:xwiki-manager-ui
+extension.oldflavors=org.xwiki.manager:xwiki-manager-wiki-administrator
+extension.oldflavors=org.xwiki.manager:xwiki-enterprise-manager-wiki-administrator
+extension.oldflavors=com.xpn.xwiki.products:xwiki-enterprise-manager-wiki-administrator
+extension.oldflavors=com.xpn.xwiki.products:xwiki-enterprise-wiki
+
+
+#-# [Since 6.1M2]
+#-# If active, the Filesystem Attachment Store will automatically clear empty directories on startup,
+#-# in some cases this may create undue load on the server and may need to be disabled. To do that,
+#-# set the following to false.
+#-# Note that if you disable this feature, empty directories will accumulate and you are responsible
+#-# for cleaning them up.
+# store.fsattach.cleanOnStartup=true
+
+#-# [Since 11.4RC1]
+#-# The root directory used by the various "file" stores implementation (attachment, deleted document, etc.).
+#-#
+#-# The default is ${environment.permanentDirectory}/store/file.
+# store.file.directory=/var/db/xwiki/{{ wiki_name }}/data/store/file/
+
+#-# [Since 6.1M2]
+#-# SMTP host when sending emails, defaults to "localhost".
+#-# This configuration property can be overridden in XWikiPreferences objects, by using the "smtp_server" property name.
+# mail.sender.host = localhost
+
+#-# [Since 6.1M2]
+#-# SMTP port when sending emails, defaults to 25.
+#-# This configuration property can be overridden in XWikiPreferences objects, by using the "smtp_port" property name.
+# mail.sender.port = 25
+
+#-# [Since 6.1M2]
+#-# From email address to use. Not defined by default and needs to be set up when calling the mail API.
+#-# This configuration property can be overridden in XWikiPreferences objects, by using the "admin_email" property name.
+# mail.sender.from = john@doe.com
+
+#-# [Since 6.1M2]
+#-# Username to authenticate on the SMTP server, if needed. By default no authentication is performed.
+#-# This configuration property can be overridden in XWikiPreferences objects, by using the "smtp_server_username"
+#-# property name.
+# mail.sender.username = someuser
+
+#-# [Since 6.1M2]
+#-# Password to authenticate on the SMTP server, if needed. By default no authentication is performed.
+#-# This configuration property can be overridden in XWikiPreferences objects, by using the "smtp_server_password"
+#-# property name.
+# mail.sender.password = somepassword
+
+#-# [Since 6.1M2]
+#-# Extra Java Mail options (see https://javamail.java.net/nonav/docs/api/).
+#-# This configuration property can be overridden in XWikiPreferences objects, by using the "javamail_extra_props"
+#-# property name.
+#-# By default the following properties are set automatically:
+#-#   mail.transport.protocol = smtp
+#-#   mail.smtp.host = <value of the mail.sender.host property>
+#-#   mail.smtp.port = <value of the mail.sender.port property>
+#-#   mail.smtp.user = <value of the mail.sender.username property>
+#-#   mail.smtp.from = <value of the mail.sender.from property>
+#-# Example:
+# mail.sender.properties = mail.smtp.starttls.enable = true
+# mail.sender.properties = mail.smtp.socks.host = someserver
+
+#-# [Since 6.4M2]
+#-# Defines which authorization checks are done when sending mails using the Mail Sender Script Service.
+#-# Example of valid values:
+#-# - "programmingrights": the current document must have Programming Rights
+#-# - "alwaysallow": no check is performed. This is useful when running XWiki in a secure environment where we
+#-#   want to allow all users to be able to send emails through the Script Service.
+#-# The default is:
+# mail.sender.scriptServiceCheckerHint = programmingrights
+
+#-# [Since 6.4M2]
+#-# optional default email addresses to add to the BCC mail header when sending email.
+# mail.sender.bcc = john@doe.com,mary@doe.com
+
+#-# [Since 6.4RC1]
+#-# The delay to wait between each mail being sent, in milliseconds. This is done to support mail throttling and not
+#-# be considered a spammer by mail servers.
+#-# The default is 8 seconds:
+# mail.sender.sendWaitTime = 8000
+
+#-# [Since 6.4.1, 7.0M1]
+#-# When using the Database Mail Listener, whether mail statuses for mails that have been sent successfully must be
+#-# discarded or not. They could be kept for tracability purpose for example.
+#-# The default is:
+# mail.sender.database.discardSuccessStatuses = true
+
+#-# [Since 11.6RC1]
+#-# Max queue size for the prepare mail thread. When the max size is reached, asynchronously sending a mail will block
+#-# till the first mail item in the prepare queue has been processed.
+# mail.sender.prepareQueueCapacity = 1000
+
+#-# [Since 11.6RC1]
+#-# Max queue size for the send mail thread. When the max size is reached, the prepare queue will block till the first
+# mail item in the send queue has been sent.
+# mail.sender.sendQueueCapacity = 1000
+
+#-# [Since 12.9RC1]
+#-# Decides if XWiki should resend automatically mails that were prepared but not sent, at restart.
+#-# Note that emails that were in the prepare_error state are not resent since they failed to be saved and thus cannot
+#-# be resent.
+# mail.sender.database.resendAutomaticallyAtStartup = true

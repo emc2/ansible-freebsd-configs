@@ -5,17 +5,11 @@
 <hibernate-configuration>
   <session-factory>
 
-    <!-- Generic parameters common to all Databases -->
-
     <property name="show_sql">false</property>
     <property name="use_outer_join">true</property>
 
-    <!-- Without it, some queries fail in MS SQL. XWiki doesn't need scrollable result sets, anyway. -->
     <property name="jdbc.use_scrollable_resultset">false</property>
 
-    <!-- DBCP Connection Pooling configuration. Only some properties are shown. All available properties can be found
-         at http://commons.apache.org/proper/commons-dbcp/configuration.html
-    -->
     <property name="dbcp.defaultAutoCommit">false</property>
     <property name="dbcp.maxTotal">50</property>
     <property name="dbcp.maxIdle">5</property>
@@ -25,20 +19,10 @@
 
     <property name="hibernate.schema_update.unique_constraint_strategy">skip</property>
 
-    <!-- PostgreSQL configuration.
-         Uncomment if you want to use PostgreSQL and comment out other database configurations.
-         Notes:
-           - "jdbc.use_streams_for_binary" needs to be set to "false",
-             see https://community.jboss.org/wiki/HibernateCoreMigrationGuide36
-           - "xwiki.virtual_mode" can be set to either "schema" or "database". Note that currently the database mode
-             doesn't support database creation (see http://jira.xwiki.org/browse/XWIKI-8753)
-           - if you want the main wiki database to be different than "xwiki" (or "public" in schema mode)
-             you will also have to set the property xwiki.db in xwiki.cfg file
-    -->
     <property name="connection.url">
-      jdbc:postgresql://{{ private_wiki_db_host }}/{{ private_wiki_db_name }}?ssl=true&amp;jaasApplicationName=private_wiki
+      jdbc:postgresql://{{ db_host }}/{{ db_name }}?ssl=true&amp;jaasApplicationName={{ jaas_appname }}
     </property>
-    <property name="connection.username">{{ private_wiki_db_username }}</property>
+    <property name="connection.username">{{ db_username }}</property>
     <property name="connection.driver_class">org.postgresql.Driver</property>
     <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
     <property name="jdbc.use_streams_for_binary">false</property>

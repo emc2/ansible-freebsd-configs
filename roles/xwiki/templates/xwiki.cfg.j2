@@ -5,8 +5,8 @@ xwiki.backlinks=1
 xwiki.tags=1
 xwiki.store.migration=1
 xwiki.inactiveuser.allowedpages=
-xwiki.authentication.validationKey={{ public_wiki_validation_key }}
-xwiki.authentication.encryptionKey={{ public_wiki_encryption_key }}
+xwiki.authentication.validationKey={{ validation_key }}
+xwiki.authentication.encryptionKey={{ encryption_key }}
 xwiki.authentication.cookiedomains=
 xwiki.authentication.logoutpage=(/|/[^/]+/|/wiki/[^/]+/)logout/*
 xwiki.authentication.authclass=org.xwiki.contrib.ldap.XWikiLDAPAuthServiceImpl
@@ -20,8 +20,8 @@ xwiki.authentication.ldap.base_DN={{ ldap_base_dn }}
 xwiki.authentication.ldap.update_user=1
 xwiki.authentication.ldap.ssl=1
 xwiki.authentication.ldap.fields_mapping=last_name=sn,first_name=givenName,email=maildrop
-xwiki.authentication.ldap.user_group=cn=public-wiki-users,ou=groups,{{ ldap_base_dn }}
-xwiki.authentication.ldap.group_mapping=XWiki.XWikiAdminGroup=cn=public-wiki-admin,ou=groups,{{ ldap_base_dn }}
+xwiki.authentication.ldap.user_group=cn={{ user_group }},ou=groups,{{ ldap_base_dn }}
+xwiki.authentication.ldap.group_mapping=XWiki.XWikiAdminGroup=cn={{ admin_group }},ou=groups,{{ ldap_base_dn }}
 xwiki.authentication.ldap.mode_group_sync=always
 xwiki.authentication.ldap.trylocal=0
 xwiki.authentication.unauthorized_code=200

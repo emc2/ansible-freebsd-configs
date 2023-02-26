@@ -1,19 +1,23 @@
-# Set up the config files
-
-- name: Install public wiki config file
-  template:
-    src: "public_wiki.xwiki.cfg.j2"
-    dest: "{{ public_wiki_xwiki_cfg_path }}"
-    owner: "{{ root_user }}"
-    group: "{{ root_group }}"
-    mode: 0644
+- name: Create base data directory
+  file:
+    path: "{{ xwiki_data_dir }}"
+    state: directory
   tags:
-    - config
     - setup
 
-- name: Install private wiki config file
+- name: Create specific wikis' data directory
+  file:
+    path: "{{ xwiki_data_dir }}/{{ item }}"
+    state: directory
+  tags:
+    - setup
+  with_items:
+    - "public_wiki"
+    - "private_wiki"
+
+- name: Install private wiki properties file
   template:
-    src: "private_wiki.xwiki.cfg.j2"
+    src: "xwiki.properties.j2"
     dest: "{{ private_wiki_xwiki_cfg_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
@@ -21,21 +25,59 @@
   tags:
     - config
     - setup
+  vars:
+    wiki_name: "private_wiki"
 
-- name: Install public wiki hibernate config file
+- name: Install public wiki properties file
   template:
-    src: "public_wiki.hibernate.cfg.xml.j2"
-    dest: "{{ public_wiki_hibernate_cfg_path }}"
+    src: "xwiki.properties.j2"
+    dest: "{{ public_wiki_xwiki_cfg_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
     mode: 0644
   tags:
     - config
     - setup
+  vars:
+    wiki_name: "public_wiki"
+
+# Set up the config files
+
+- name: Install private wiki config file
+  template:
+    src: "xwiki.cfg.j2"
+    dest: "{{ private_wiki_xwiki_cfg_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+  vars:
+    validation_key: "{{ private_wiki_validation_key }}"
+    encryption_key: "{{ private_wiki_encryption_key }}"
+    user_group: "private-wiki-users"
+    admin_group: "private-wiki-admin"
+
+- name: Install public wiki config file
+  template:
+    src: "xwiki.cfg.j2"
+    dest: "{{ public_wiki_xwiki_cfg_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+  vars:
+    validation_key: "{{ public_wiki_validation_key }}"
+    encryption_key: "{{ public_wiki_encryption_key }}"
+    user_group: "public-wiki-users"
+    admin_group: "public-wiki-admin"
 
 - name: Install private wiki hibernate config file
   template:
-    src: "private_wiki.hibernate.cfg.xml.j2"
+    src: "hibernate.cfg.xml.j2"
     dest: "{{ private_wiki_hibernate_cfg_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
@@ -43,19 +85,44 @@
   tags:
     - config
     - setup
+  vars:
+    db_host: "{{ private_wiki_db_host }}"
+    db_name: "{{ private_wiki_db_name }}"
+    db_username: "{{ private_wiki_db_username }}"
+    jaas_appname: "private_wiki"
+
+- name: Install public wiki hibernate config file
+  template:
+    src: "hibernate.cfg.xml.j2"
+    dest: "{{ public_wiki_hibernate_cfg_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - config
+    - setup
+  vars:
+    db_host: "{{ public_wiki_db_host }}"
+    db_name: "{{ public_wiki_db_name }}"
+    db_username: "{{ public_wiki_db_username }}"
+    jaas_appname: "public_wiki"
 
 - name: Copying private wiki cache config
-  copy:
-    src: "cache_config.xml"
+  template:
+    src: "cache_config.xml.j2"
     dest: "{{ private_wiki_cache_config_path }}"
   tags:
     - setup
     - config
+  vars:
+    wiki_name: "private_wiki"
 
 - name: Copying public wiki cache config
-  copy:
-    src: "cache_config.xml"
+  template:
+    src: "cache_config.xml.j2"
     dest: "{{ public_wiki_cache_config_path }}"
   tags:
     - setup
     - config
+  vars:
+    wiki_name: "public_wiki"
