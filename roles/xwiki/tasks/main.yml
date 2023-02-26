@@ -24,7 +24,7 @@
 
 - name: Install public wiki hibernate config file
   template:
-    src: "public_wiki.hibernate.cfg.j2"
+    src: "public_wiki.hibernate.cfg.xml.j2"
     dest: "{{ public_wiki_hibernate_cfg_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
@@ -35,7 +35,7 @@
 
 - name: Install private wiki hibernate config file
   template:
-    src: "private_wiki.hibernate.cfg.j2"
+    src: "private_wiki.hibernate.cfg.xml.j2"
     dest: "{{ private_wiki_hibernate_cfg_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
