@@ -24,7 +24,7 @@
 - name: Install private wiki properties file
   template:
     src: "xwiki.properties.j2"
-    dest: "{{ private_wiki_xwiki_cfg_path }}"
+    dest: "{{ private_wiki_xwiki_properties_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
     mode: 0644
@@ -37,7 +37,7 @@
 - name: Install public wiki properties file
   template:
     src: "xwiki.properties.j2"
-    dest: "{{ public_wiki_xwiki_cfg_path }}"
+    dest: "{{ public_wiki_xwiki_properties_path }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
     mode: 0644
