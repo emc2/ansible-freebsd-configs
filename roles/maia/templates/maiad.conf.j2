@@ -18,7 +18,7 @@ $SYSLOG_LEVEL = 'mail.debug';
 $LOGFILE = "{{ maia_log_dir }}/maiad.log";
 @lookup_sql_dsn = ( ['DBI:Pg:dbname=maia;host={{ maia_db_host }}',
                      '{{ maia_database_user }}', ''] );
-$enable_db = 1;
+$enable_db = 0;
 $enable_global_cache = 1;
 $path = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/bin:/bin';
 $file        = '/usr/bin/file';   # file(1) utility; use recent versions
