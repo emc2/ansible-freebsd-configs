@@ -53,3 +53,7 @@ tls_random_source = dev:/dev/urandom
 
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 compatibility_level = 2
+
+smtpd_milters = local:{{ dkim_socket }}
+non_smtpd_milters = $smtpd_milters
+milter_default_action = accept

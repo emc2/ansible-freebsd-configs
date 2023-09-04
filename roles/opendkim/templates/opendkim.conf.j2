@@ -1,0 +1,22 @@
+AllowSHA1Only           no
+AuthservID              {{ ansible_fqdn }}
+AutoRestart             yes
+AutoRestartRate         10/1h
+BaseDirectory           {{ dkim_run_dir }}
+Canonicalization        relaxed/simple
+Domain                  {{ network_name }}
+ExternalIgnoreList      refile:{{ opendkim_trustedhosts_path }}
+InternalHosts           refile:{{ opendkim_trustedhosts_path }}
+KeyTable                refile:{{ opendkim_keytable_path }}
+LogWhy                  yes
+MinimumKeyBits          1024
+Mode                    sv
+ReportAddress           "DKIM Error Postmaster" <postmaster@{{ network_name }}>
+RequireSafeKeys         Yes
+Selector                {{ ansible_hostname }}
+SignatureAlgorithm      rsa-sha256
+SigningTable            refile:{{ opendkim_signingtable_path }}
+Socket                  local:{{ dkim_socket }}
+Syslog                  Yes
+SyslogSuccess           Yes
+UserID                  {{ opendkim_user }}:{{ opendkim_user }}
