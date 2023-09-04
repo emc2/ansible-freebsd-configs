@@ -1,0 +1,13 @@
+---
+opendkim_user="postfix"
+opendkim_group="postfix"
+opendkim_conf_dir: "{{ local_conf_dir }}/mail"
+opendkim_conf_file: "opendkim.conf"
+opendkim_conf_path: "{{ opendkim_conf_dir }}/{{ opendkim_conf_file }}"
+opendkim_keytable_file: "opendkim.keytable"
+opendkim_keytable_path: "{{ opendkim_conf_dir }}/{{ opendkim_keytable_file }}"
+opendkim_signingtable_file: "opendkim.signingtable"
+opendkim_signingtable_path: "{{ opendkim_conf_dir }}/{{ opendkim_signingtable_file }}"
+opendkim_trustedhosts_file: "opendkim.trustedhosts"
+opendkim_trustedhosts_path: "{{ opendkim_conf_dir }}/{{ opendkim_trustedhosts_file }}"
+opendkim_keys_dir: "{{ db_dir }}/dkim"

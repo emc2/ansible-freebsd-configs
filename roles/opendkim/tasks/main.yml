@@ -1,0 +1,92 @@
+# Set up the opendkim config files
+
+- name: Create opendkim.conf file
+  template:
+    src: opendkim.conf.j2
+    dest: "{{ opendkim_conf_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: opendkim_conf
+
+- name: Create opendkim.keytable file
+  template:
+    src: opendkim.keytable.j2
+    dest: "{{ opendkim_keytable_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: opendkim_keytable
+
+- name: Create opendkim.signingtable file
+  template:
+    src: opendkim.signingtable.j2
+    dest: "{{ opendkim_signingtable_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: opendkim_signingtable
+
+- name: Create opendkim.trustedhosts file
+  template:
+    src: opendkim.trustedhosts.j2
+    dest: "{{ opendkim_trustedhosts_path }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: opendkim_trustedhosts
+
+# Enable opendkim is enabled in rc.conf and ensure the daemon is running.
+
+- name: Enable opendkim in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^milteropendkim_enable="
+    line: "milteropendkim_enable=YES"
+  tags:
+    - setup
+
+- name: Set opendkim user in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^milteropendkim_uid="
+    line: "milteropendkim_uid={{ opendkim_user }}"
+  tags:
+    - setup
+
+- name: Set opendkim config file in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^milteropendkim_cfgfile="
+    line: "milteropendkim_cfgfile={{ opendkim_conf_path }}"
+  tags:
+    - setup
+
+- name: Ensure opendkim is running
+  service:
+    name: "{{ opendkim_service }}"
+    state: started
+
+- name: Restart opendkim
+  service:
+    name: "{{ opendkim_service }}"
+    state: restarted
+  tags:
+    - ssl
+    - config
+  when: opendkim_conf.changed or
+        opendkim_keytable.changed or
+        opendkim_signingtable.changed or
+        opendkim_trustedhosts.changed
