@@ -20,9 +20,9 @@
 
 - name: Set DKIM key permissions
   file: "{{ opendkim_key_path }}"
-  owner: "{{ root_user }}"
-  group: "{{ opendkim_group }}"
-  mode: 0640
+    owner: "{{ root_user }}"
+    group: "{{ opendkim_group }}"
+    mode: 0640
 
 # Set up the opendkim config files
 
