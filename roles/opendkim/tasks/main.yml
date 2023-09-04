@@ -1,3 +1,23 @@
+- name: Create opendkim directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ opendkim_user }}"
+    group: "{{ opendkim_group }}"
+    mode: 0700
+  with_items:
+    - "{{ opendkim_db_dir }}"
+    - "{{ opendkim_keys_dir }}"
+    - "{{ dkim_run_dir }}"
+  tags:
+    - setup
+    - ssl
+
+- name: Create DKIM keys
+  command: "opendkim-genkey -a -b 4096 -d {{ network_name }} -D {{ opendkim_keys_dir }} -s {{ ansible_hostname }}"
+  args:
+    creates: "{{ opendkim_key_path }}"
+
 # Set up the opendkim config files
 
 - name: Create opendkim.conf file
