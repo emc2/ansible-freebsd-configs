@@ -18,6 +18,12 @@
   args:
     creates: "{{ opendkim_key_path }}"
 
+- name: Set DKIM key permissions
+  file: "{{ opendkim_key_path }}"
+  owner: "{{ root_user }}"
+  group: "{{ opendkim_group }}"
+  mode: 0640
+
 # Set up the opendkim config files
 
 - name: Create opendkim.conf file
@@ -83,6 +89,14 @@
     dest: "{{ rc_conf }}"
     regexp: "^milteropendkim_uid="
     line: "milteropendkim_uid={{ opendkim_user }}"
+  tags:
+    - setup
+
+- name: Set opendkim group in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^milteropendkim_gid="
+    line: "milteropendkim_gid={{ opendkim_group }}"
   tags:
     - setup
 
