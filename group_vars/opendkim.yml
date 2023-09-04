@@ -1,6 +1,6 @@
 ---
-opendkim_user="postfix"
-opendkim_group="postfix"
+opendkim_user: "postfix"
+opendkim_group: "postfix"
 opendkim_conf_dir: "{{ local_conf_dir }}/mail"
 opendkim_conf_file: "opendkim.conf"
 opendkim_conf_path: "{{ opendkim_conf_dir }}/{{ opendkim_conf_file }}"
