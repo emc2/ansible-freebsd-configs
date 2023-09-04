@@ -19,7 +19,8 @@
     creates: "{{ opendkim_key_path }}"
 
 - name: Set DKIM key permissions
-  file: "{{ opendkim_key_path }}"
+  file:
+    path: "{{ opendkim_key_path }}"
     owner: "{{ root_user }}"
     group: "{{ opendkim_group }}"
     mode: 0640
