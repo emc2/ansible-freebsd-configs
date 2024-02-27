@@ -21,7 +21,8 @@ ssl_cipher_list = {{ openssl_ciphers }}
 verbose_proctitle = yes
 
 passdb {
-  driver = pam
+  args = /usr/local/etc/dovecot/dovecot-ldap.conf
+  driver = ldap
 }
 
 plugin {
