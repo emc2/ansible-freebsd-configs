@@ -20,6 +20,26 @@
   tags:
     - setup
 
+- name: Create postgrey group
+  group:
+    name: "{{ postgrey_group }}"
+    gid: "{{ postgrey_gid }}"
+  tags:
+    - setup
+
+- name: Create postgrey user
+  user:
+    name: "{{ postgrey_user }}"
+    uid: "{{ postgrey_uid }}"
+    group: "{{ postgrey_group }}"
+    comment: "Postgrey Owner"
+    home: "{{ nonexistent_dir }}"
+    login_class: "daemon"
+    shell: "{{ nologin_class }}"
+    system: yes
+  tags:
+    - setup
+
 # Copy certificates and keys into place
 
 - name: Install ldap client certificate
@@ -141,7 +161,43 @@
   tags:
     - setup
 
-# Enable postfix is enabled in rc.conf and ensure the daemon is running.
+# Create postgrey directory
+
+- name: Create postgrey socket directory
+  file:
+    path: "{{ postgrey_socket_dir }}"
+    state: directory
+    owner: "{{ postgrey_user }}"
+    group: "{{ postfix_group }}"
+    mode: 0640
+  tags:
+    - setup
+
+# Enable postgrey in rc.conf and ensure the daemon is running.
+
+- name: Enable postgrey in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^postgrey_enable="
+    line: "postgrey_enable=YES"
+  tags:
+    - setup
+
+- name: Set postgrey options in rc.conf
+  lineinfile:
+    dest: "{{ rc_conf }}"
+    regexp: "^postgrey_flags="
+    line: "postgrey_flags=--max-age=365 --delay=60 --unix={{ postgrey_socket }}"
+  tags:
+    - setup
+
+- name: Ensure postgrep is running
+  service:
+    name: "{{ postgrey_service }}"
+    state: started
+
+
+# Enable postfix in rc.conf and ensure the daemon is running.
 
 - name: Enable postfix in rc.conf
   lineinfile:

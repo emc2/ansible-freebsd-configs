@@ -120,6 +120,11 @@ tomcat_group: "{{ www_group }}"
 tomcat_uid: "{{ www_uid }}"
 tomcat_gid: "{{ www_gid }}"
 
+postgrey_group: postgrey
+postgrey_user: postgrey
+postgrey_gid: 225
+postgrey_uid: 225
+
 tomcat_version: "8.5"
 
 # Service names
@@ -131,6 +136,7 @@ saslauthd_service: "saslauthd"
 slapd_service: "slapd"
 dovecot_service: "dovecot"
 postfix_service: "postfix"
+postgrey_service: "postgrey"
 maiad_service: "maiad"
 freshclam_service: "clamav_freshclam"
 clamd_service: "clamav_clamd"
