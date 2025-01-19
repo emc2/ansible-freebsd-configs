@@ -21,8 +21,8 @@
 
 - name: Create clamd.conf file
   template:
-    src: mailer.conf.j2
-    dest: "{{ mailer_conf }}"
+    src: clamd.conf.j2
+    dest: "{{ clamd_conf }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
     mode: 0644
