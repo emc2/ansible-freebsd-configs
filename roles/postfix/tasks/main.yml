@@ -187,7 +187,7 @@
   lineinfile:
     dest: "{{ rc_conf }}"
     regexp: "^postgrey_flags="
-    line: "\"postgrey_flags=--max-age=365 --delay=60 --unix={{ postgrey_socket }}\""
+    line: "postgrey_flags=\"--max-age=365 --delay=60 --unix={{ postgrey_socket }}\""
   tags:
     - setup
 
