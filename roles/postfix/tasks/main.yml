@@ -207,6 +207,11 @@
   tags:
     - setup
 
+- name: Ensure postgrey is running
+  service:
+    name: "{{ postgrey_service }}"
+    state: started
+
 - name: Ensure postfix is running
   service:
     name: "{{ postfix_service }}"
