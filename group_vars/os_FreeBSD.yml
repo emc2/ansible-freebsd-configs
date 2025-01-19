@@ -115,6 +115,11 @@ squid_group: squid
 squid_uid: 100
 squid_gid: 100
 
+amavisd_user: "{{ clamav_user }}"
+amavisd_group: "{{ clamav_group }}"
+amavisd_uid: "{{ clamav_uid }}"
+amavisd_gid: "{{ clamav_gid }}"
+
 tomcat_user: "{{ www_user }}"
 tomcat_group: "{{ www_group }}"
 tomcat_uid: "{{ www_uid }}"

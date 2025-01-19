@@ -4,3 +4,9 @@ mail_queue_dir: "{{ queue_dir }}/postfix"
 mail_auth_socket_path: "{{ mail_queue_dir }}/private/auth"
 dkim_run_dir: "{{ run_dir }}/dkim"
 dkim_socket: "{{ dkim_run_dir }}/opendkim.sock"
+amavisd_port: 10024
+reinject_port: 10025
+postgrey_socket_dir: "{{ mail_queue_dir }}/postgrey"
+postgrey_socket: "{{ postgrey_socket_dir }}/postgrey.sock"
+clamav_run_dir: "{{ run_dir }}/clamav"
+clamav_socket: "{{ clamav_run_dir }}/clamav.sock"

@@ -25,7 +25,7 @@ local_recipient_maps = ldap:{{ postfix_ldap_cf_path }}
 masquerade_domains = {{ network_name }}
 
 smtpd_sender_restrictions = permit_sasl_authenticated, permit_mynetworks
-smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_non_fqdn_hostname, reject_non_fqdn_sender, reject_non_fqdn_recipient, reject_unauth_destination, reject_unauth_pipelining, reject_invalid_hostname
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, check_policy_service unix:{{ postgrey_socket }}, reject_non_fqdn_hostname, reject_non_fqdn_sender, reject_non_fqdn_recipient, reject_unauth_destination, reject_unauth_pipelining, reject_invalid_hostname
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_security_options = noanonymous
 smtpd_sasl_type = dovecot

@@ -19,6 +19,30 @@
   tags:
     - setup
 
+- name: Create clamd.conf file
+  template:
+    src: mailer.conf.j2
+    dest: "{{ mailer_conf }}"
+    owner: "{{ root_user }}"
+    group: "{{ root_group }}"
+    mode: 0644
+  tags:
+    - setup
+    - config
+  register: clamd_conf
+
+# Create clamav directory
+
+- name: Create postgrey socket directory
+  file:
+    path: "{{ clamav_run_dir }}"
+    state: directory
+    owner: "{{ clamav_user }}"
+    group: "{{ clamav_group }}"
+    mode: 0750
+  tags:
+    - setup
+
 - name: Enable clamav-freshclam in rc.conf
   lineinfile:
     dest: "{{ rc_conf }}"
@@ -60,4 +84,5 @@
   tags:
     - ssl
     - config
-  when: server_ca_ssl.changed
+  when: server_ca_ssl.changed or
+        clamd_conf.changed

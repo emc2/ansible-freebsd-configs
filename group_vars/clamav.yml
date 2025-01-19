@@ -1,1 +1,3 @@
 ---
+clamd_conf_dir: "{{ local_conf_dir }}"
+clamd_conf: "{{ clamd_conf_dir }}/clamd.conf"

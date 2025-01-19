@@ -1,5 +1,5 @@
 smtp      	inet  n       -       n       -       -       smtpd
-  -o content_filter=smtp-amavis:localhost:10024
+  -o content_filter=smtp-amavis:localhost:{{ amavisd_port }}
 smtps     	inet  n       -       n       -       -       smtpd
   -o smtpd_tls_wrappermode=yes
   -o smtpd_sasl_auth_enable=yes
@@ -9,7 +9,7 @@ smtp-amavis 	unix  -       -       n       -       2       smtp
   -o smtp_send_xforward_command=yes
   -o disable_dns_lookups=yes
   -o max_use=20
-[::1]:10025 inet  n       -       n       -       -       smtpd
+[::1]:{{ reinject_port }} inet  n       -       n       -       -       smtpd
   -o receive_override_options=no_unknown_recipient_checks,no_header_body_checks,no_milters
   -o smtpd_helo_restrictions=
   -o smtpd_client_restrictions=

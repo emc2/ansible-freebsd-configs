@@ -1,0 +1,3 @@
+--
+amavisd_conf_dir: "{{ local_conf_dir }}"
+amavisd_conf: "{{ amavisd_conf_dir }}/amavisd.conf"

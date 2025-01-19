@@ -169,7 +169,7 @@
     state: directory
     owner: "{{ postgrey_user }}"
     group: "{{ postfix_group }}"
-    mode: 0640
+    mode: 0750
   tags:
     - setup
 
