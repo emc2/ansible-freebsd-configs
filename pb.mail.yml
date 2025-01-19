@@ -11,4 +11,4 @@
     - dovecot
     - postfix
     - opendkim
-    - maia
+    - amavisd

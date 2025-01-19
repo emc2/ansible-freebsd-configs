@@ -17,7 +17,7 @@ ssl_ca = <{{ ssl_client_CA_cert_path }}
 #ssl_crl = <{{ ssl_client_CA_crl_path }}
 ssl_cert = <{{ dovecot_mail_cert_path }}
 ssl_key = <{{ dovecot_mail_key_path }}
-ssl_cipher_list = {{ openssl_ciphers }}
+#ssl_cipher_list = {{ openssl_ciphers }}
 verbose_proctitle = yes
 
 passdb {
