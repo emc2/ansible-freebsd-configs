@@ -1,77 +1,9 @@
-- name: Create clamav group
-  group:
-    name: "{{ clamav_group }}"
-    gid: "{{ clamav_gid }}"
-  tags:
-    - setup
+# Enable amavisd in rc.conf and ensure the daemon is running.
 
-- name: Create clamav user
-  user:
-    name: "{{ clamav_user }}"
-    uid: "{{ clamav_uid }}"
-    group: "{{ clamav_group }}"
-    groups: "{{ mail_group }}"
-    comment: "Clamav Antivirus"
-    home: "{{ nonexistent_home }}"
-    login_class: "daemon"
-    shell: "{{ nologin_class }}"
-    system: yes
-  tags:
-    - setup
-
-# Enable maiad is enabled in rc.conf and ensure the daemon is running.
-
-- name: Enable maiad in rc.conf
+- name: Enable amavisd in rc.conf
   lineinfile:
     dest: "{{ rc_conf }}"
     regexp: "^amavisd_enable="
     line: "amavisd_enable=YES"
   tags:
     - setup
-
-- name: Enable clamav-freshclam in rc.conf
-  lineinfile:
-    dest: "{{ rc_conf }}"
-    regexp: "^clamav_freshclam_enable="
-    line: "clamav_freshclam_enable=YES"
-  tags:
-    - setup
-
-- name: Enable clamav-clamd in rc.conf
-  lineinfile:
-    dest: "{{ rc_conf }}"
-    regexp: "^clamav_clamd_enable="
-    line: "clamav_clamd_enable=YES"
-  tags:
-    - setup
-
-- name: Ensure clamav-freshclam is running
-  service:
-    name: "{{ freshclam_service }}"
-    state: started
-
-- name: Restart clamav-freshclam
-  service:
-    name: "{{ freshclam_service }}"
-    state: restarted
-  tags:
-    - ssl
-    - config
-  when: maia_conf.changed
-
-- name: Ensure clamav-clamd is running
-  service:
-    name: "{{ clamd_service }}"
-    state: started
-
-- name: Restart clamav-clamd
-  service:
-    name: "{{ clamd_service }}"
-    state: restarted
-  tags:
-    - ssl
-    - config
-  when: maia_conf.changed or
-        server_ca_ssl.changed or
-        maia_postgres_key.changed or
-        maia_postgres_cert.changed
