@@ -33,7 +33,7 @@
     uid: "{{ postgrey_uid }}"
     group: "{{ postgrey_group }}"
     comment: "Postgrey Owner"
-    home: "{{ nonexistent_dir }}"
+    home: "{{ nonexistent_home }}"
     login_class: "daemon"
     shell: "{{ nologin_class }}"
     system: yes
