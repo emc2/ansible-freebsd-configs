@@ -47,7 +47,6 @@
   tags:
     - ssl
     - config
-  when: maia_conf.changed
 
 - name: Ensure clamav-clamd is running
   service:
