@@ -4,6 +4,8 @@
 {% set uris = uris.append(item) %}
 {% endfor %}
 {% endif %}
+auth_bind = yes
+auth_bind_userdn = cn=%u,{{ ldap_users_dn }}
 uris = {{ uris | join(" ") }}
 sasl_bind = yes
 sasl_mech = GSSAPI
