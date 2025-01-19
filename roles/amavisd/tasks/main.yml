@@ -10,8 +10,8 @@
 
 - name: Create amavisd.conf file
   template:
-    src: mailer.conf.j2
-    dest: "{{ mailer_conf }}"
+    src: amavisd.conf.j2
+    dest: "{{ amavisd_conf }}"
     owner: "{{ root_user }}"
     group: "{{ root_group }}"
     mode: 0644

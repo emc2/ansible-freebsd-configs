@@ -29,7 +29,7 @@
   tags:
     - setup
     - config
-  register: clamd_conf
+  register: clamd_conf_file
 
 # Create clamav directory
 
@@ -85,4 +85,4 @@
     - ssl
     - config
   when: server_ca_ssl.changed or
-        clamd_conf.changed
+        clamd_conf_file.changed
