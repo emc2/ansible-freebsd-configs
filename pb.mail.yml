@@ -11,4 +11,5 @@
     - dovecot
     - postfix
     - opendkim
+    - clamav
     - amavisd
