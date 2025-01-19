@@ -104,7 +104,7 @@
     name: "{{ postgres_service }}"
     state: started
 
-- name: Restart postresql
+- name: Restart postgresql
   service:
     name: "{{ postgres_service }}"
     state: restarted
@@ -114,6 +114,6 @@
   when: postgres_data.changed or
         postgres_cert.changed or
         postgres_key.changed or
-        postgresql.conf.changed or
+        postgresql_conf.changed or
         pg_hba.changed or
         server_ca_ssl.changed
