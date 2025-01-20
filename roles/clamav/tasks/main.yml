@@ -37,8 +37,8 @@
   file:
     path: "{{ clamav_run_dir }}"
     state: directory
-    owner: "{{ clamav_user }}"
-    group: "{{ clamav_group }}"
+    owner: "{{ amavisd_user }}"
+    group: "{{ amavisd_group }}"
     mode: 0750
   tags:
     - setup
