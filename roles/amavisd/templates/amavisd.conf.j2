@@ -1,4 +1,4 @@
-se strict;
+use strict;
 
 $myprogram_name = 'amavisd';
 $max_servers = 2;
@@ -9,9 +9,9 @@ $MYHOME = '/var/amavis';
 $TEMPBASE = "$MYHOME/tmp";
 $ENV{TMPDIR} = $TEMPBASE;
 $QUARANTINEDIR = '/var/virusmails';
-$log_level = 0;
+$log_level = 1;
 $log_recip_templ = undef;
-$do_syslog = 1
+$do_syslog = 1;
 $syslog_facility = 'mail';
 $enable_db = 0;
 $nanny_details_level = 2;
@@ -141,8 +141,7 @@ $banned_filename_re = new_RE(
    },
   ],
 });
-
-decoders = (
+@decoders = (
   ['mail', \&do_mime_decode],
   ['F',    \&do_uncompress, ['unfreeze', 'freeze -d', 'melt', 'fcat'] ],
   ['Z',    \&do_uncompress, ['uncompress', 'gzip -d', 'zcat'] ],
@@ -170,8 +169,6 @@ decoders = (
   ['cab',  \&do_cabextract, 'cabextract'],
   ['tnef', \&do_tnef_ext, 'tnef'],
   ['tnef', \&do_tnef],
-# ['lha',  \&do_lha,   'lha'],  # not safe, use 7z instead
-# ['sit',  \&do_unstuff, 'unstuff'],  # not safe
   [['zip','kmz'], \&do_7zip,  ['7za', '7zz', '7z'] ],
   [['zip','kmz'], \&do_unzip],
   ['7z',   \&do_7zip,  ['7zr', '7za', '7zz', '7z'] ],
@@ -181,7 +178,6 @@ decoders = (
            \&do_7zip,  ['7zz', '7z'] ],
   ['exe',  \&do_executable, ['unrar','rar'], 'lha', ['unarj','arj'] ],
 );
-
 @av_scanners = (
   ['ClamAV-clamd',
      \&ask_daemon, ["CONTSCAN {}\n", "/var/run/clamav/clamd.sock"],

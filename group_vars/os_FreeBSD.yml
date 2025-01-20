@@ -80,11 +80,6 @@ dovecot_login_user: dovenull
 dovecot_login_gid: 143
 dovecot_login_uid: 143
 
-maia_group: vscan
-maia_user: vscan
-maia_gid: 110
-maia_uid: 110
-
 clamav_group: clamav
 clamav_user: clamav
 clamav_gid: 106
@@ -115,10 +110,10 @@ squid_group: squid
 squid_uid: 100
 squid_gid: 100
 
-amavisd_user: "{{ clamav_user }}"
-amavisd_group: "{{ clamav_group }}"
-amavisd_uid: "{{ clamav_uid }}"
-amavisd_gid: "{{ clamav_gid }}"
+amavisd_user: vscan
+amavisd_group: vscan
+amavisd_uid: 110
+amavisd_gid: 110
 
 tomcat_user: "{{ www_user }}"
 tomcat_group: "{{ www_group }}"

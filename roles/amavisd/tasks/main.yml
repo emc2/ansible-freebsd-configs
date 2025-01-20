@@ -1,3 +1,24 @@
+- name: Create amavisd group
+  group:
+    name: "{{ amavisd_group }}"
+    gid: "{{ amavisd_gid }}"
+  tags:
+    - setup
+
+- name: Create amavisd user
+  user:
+    name: "{{ amavisd_user }}"
+    uid: "{{ amavisd_uid }}"
+    group: "{{ amavisd_group }}"
+    groups: "{{ clamav_group }}"
+    comment: "Scanning Virus Account"
+    home: "{{ amavisd_home }}"
+    login_class: "daemon"
+    shell: "/bin/sh"
+    system: yes
+  tags:
+    - setup
+
 # Enable amavisd in rc.conf and ensure the daemon is running.
 
 - name: Enable amavisd in rc.conf
