@@ -30,7 +30,6 @@ LoadModule proxy_http_module libexec/apache24/mod_proxy_http.so
 LoadModule proxy_html_module libexec/apache24/mod_proxy_html.so
 LoadModule proxy_ajp_module libexec/apache24/mod_proxy_ajp.so
 LoadModule auth_kerb_module libexec/apache24/mod_auth_kerb.so
-LoadModule php_module libexec/apache24/libphp.so
 
 # Third party modules
 IncludeOptional etc/apache24/modules.d/[0-9][0-9][0-9]_*.conf
@@ -72,14 +71,6 @@ Include etc/apache24/Includes/*.conf
     Order allow,deny
     Deny from all
     Satisfy All
-</FilesMatch>
-
-<FilesMatch "\.php$">
-    SetHandler application/x-httpd-php
-</FilesMatch>
-
-<FilesMatch "\.phps$">
-     SetHandler application/x-httpd-php-source
 </FilesMatch>
 
 <VirtualHost *:80>
